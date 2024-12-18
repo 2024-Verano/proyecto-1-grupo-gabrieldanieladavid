@@ -115,7 +115,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegistroClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroClienteActionPerformed
-        System.out.println("Registro de clientes");
+        RegistroClientesForm registroClientes = new RegistroClientesForm();
+        registroClientes.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnRegistroClienteActionPerformed
 
     private void btnRegistroProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroProductosActionPerformed

@@ -67,6 +67,7 @@ public class LoginForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel4 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         txtUsuario = new javax.swing.JTextField();
@@ -74,6 +75,8 @@ public class LoginForm extends javax.swing.JFrame {
         btnIngresar = new javax.swing.JButton();
         lblMensajeError = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
+
+        jLabel4.setText("jLabel4");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -213,6 +216,7 @@ public class LoginForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel lblMensajeError;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsuario;
