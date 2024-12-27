@@ -5,6 +5,10 @@
 package com.mycompany.tiendadeciclismo;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,18 +26,29 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         setTitle("Registro de Clientes"); 
         lblMensajes.setText("");
         configurarTabla();
+        configurarCamposBusqueda(); 
         cargarTabla();
+        limpiarMensaje();
+    }
+    
+    private void limpiarMensaje() {
+        lblMensajes.setText("");
     }
     
     private void configurarTabla() {
         String[] columnNames = {
-            "Código", "Nombre", "Apellidos", "Teléfono", "Correo", 
+            "Código", "Nombre", "Apellidos", "Teléfono", "Correo",
             "Provincia", "Cantón", "Distrito", "Fecha Nacimiento"
         };
-        
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {}, columnNames
-        ));
+
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Hace que ninguna celda sea editable
+            }
+        };
+
+        jTable1.setModel(model);
     }
     
     private void cargarTabla() {
@@ -55,6 +70,62 @@ public class RegistroClientesForm extends javax.swing.JFrame {
                 sdf.format(cliente.getFechaNacimiento())
             });
         }
+    }
+    
+    private void mostrarMensaje(String mensaje, boolean exito) {
+        lblMensajes.setText(mensaje);
+        lblMensajes.setForeground(exito ? new java.awt.Color(0, 153, 0) : new java.awt.Color(204, 0, 0));
+    }
+    
+    private void actualizarTabla(List<Cliente> clientes) {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        for (Cliente cliente : clientes) {
+            model.addRow(new Object[]{
+                cliente.getCodigo(),
+                cliente.getNombre(),
+                cliente.getApellidos(),
+                cliente.getTelefono(),
+                cliente.getCorreo(),
+                cliente.getProvincia(),
+                cliente.getCanton(),
+                cliente.getDistrito(),
+                sdf.format(cliente.getFechaNacimiento())
+            });
+        }
+    }
+    
+    private void configurarCamposBusqueda() {
+        txtCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (txtCodigo.getText().equals("Ingrese el código")) {
+                    txtCodigo.setText("");
+                }
+            }
+
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (txtCodigo.getText().isEmpty()) {
+                    txtCodigo.setText("Ingrese el código");
+                }
+            }
+        });
+
+        txtNombreApellido.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (txtNombreApellido.getText().equals("Ingrese el nombre/apellidos")) {
+                    txtNombreApellido.setText("");
+                }
+            }
+
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (txtNombreApellido.getText().isEmpty()) {
+                    txtNombreApellido.setText("Ingrese el nombre/apellidos");
+                }
+            }
+        });
     }
 
     /**
@@ -158,11 +229,19 @@ public class RegistroClientesForm extends javax.swing.JFrame {
             Class[] types = new Class [] {
                 java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
         });
+        jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -191,7 +270,6 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         btnModificar.setBackground(new java.awt.Color(0, 102, 204));
         btnModificar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btnModificar.setText("Modificar");
-        btnModificar.setActionCommand("Modificar");
         btnModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnModificarActionPerformed(evt);
@@ -296,7 +374,52 @@ public class RegistroClientesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNombreApellidoActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
+        String codigoText = txtCodigo.getText().trim();
+        String nombreApellidos = txtNombreApellido.getText().trim();
+
+        if (codigoText.equals("Ingrese el código")) {
+            codigoText = "";
+        }
+        if (nombreApellidos.equals("Ingrese el nombre/apellidos")) {
+            nombreApellidos = "";
+        }
+
+        if (codigoText.isEmpty() && nombreApellidos.isEmpty()) {
+            cargarTabla();
+            return;
+        }
+
+        try {
+            Set<Cliente> clientesEncontrados = new HashSet<>(); // Usamos Set para evitar duplicados
+            GestorClientes gestor = GestorClientes.getInstancia();
+
+            // Buscar por código si se ingresó uno
+            if (!codigoText.isEmpty()) {
+                int codigo = Integer.parseInt(codigoText);
+                clientesEncontrados.addAll(gestor.buscarClientesPorCodigo(codigo));
+            }
+
+            // Buscar por nombre/apellidos si se ingresó algo
+            if (!nombreApellidos.isEmpty()) {
+                clientesEncontrados.addAll(gestor.buscarClientesPorNombreApellidos(nombreApellidos));
+            }
+
+            // Convertir el Set a List para mantener la compatibilidad con el método actualizarTabla
+            List<Cliente> resultados = new ArrayList<>(clientesEncontrados);
+            actualizarTabla(resultados);
+
+            if (resultados.isEmpty()) {
+                mostrarMensaje("No se encontraron clientes con los criterios especificados", false);
+            } else {
+                mostrarMensaje("", true);
+            }
+
+        } catch (NumberFormatException e) {
+            mostrarMensaje("El código debe ser un número válido", false);
+        } catch (Exception e) {
+            mostrarMensaje("Error al buscar clientes: " + e.getMessage(), false);
+        }
+   
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoClienteActionPerformed
@@ -307,11 +430,60 @@ public class RegistroClientesForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNuevoClienteActionPerformed
 
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            mostrarMensaje("Por favor, seleccione un cliente para modificar", false);
+            return;
+        }
+
+        try {
+            int codigo = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
+            Cliente cliente = GestorClientes.getInstancia().obtenerClientePorCodigo(codigo);
+
+            if (cliente != null) {
+                MantenimientoClienteForm mantenimientoCliente = new MantenimientoClienteForm(cliente);
+                mantenimientoCliente.setVisible(true);
+                this.dispose();
+            } else {
+                mostrarMensaje("Error: No se pudo encontrar el cliente seleccionado", false);
+            }
+        } catch (Exception e) {
+            mostrarMensaje("Error al cargar el cliente para modificar: " + e.getMessage(), false);
+        }
     }//GEN-LAST:event_btnModificarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            mostrarMensaje("Por favor, seleccione un cliente para eliminar", false);
+            return;
+        }
+
+        int codigo = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
+        String nombre = jTable1.getValueAt(selectedRow, 1).toString();
+
+        int confirmacion = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro que desea eliminar al cliente " + nombre + "?",
+                "Confirmar eliminación",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirmacion == javax.swing.JOptionPane.YES_OPTION) {
+            try {
+                GestorClientes gestor = GestorClientes.getInstancia();
+                Cliente cliente = gestor.obtenerClientePorCodigo(codigo);
+
+                if (cliente != null) {
+                    gestor.eliminarCliente(codigo);
+                    cargarTabla(); // Actualiza la tabla después de eliminar
+                    mostrarMensaje("Cliente eliminado exitosamente", true);
+                }
+            } catch (Exception e) {
+                mostrarMensaje("Error al eliminar el cliente: " + e.getMessage(), false);
+            }
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
