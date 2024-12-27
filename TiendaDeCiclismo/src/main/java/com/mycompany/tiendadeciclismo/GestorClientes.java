@@ -97,9 +97,42 @@ public class GestorClientes {
                       .getAsInt() + 1;
     }
     
-    public void agregarCliente(Cliente cliente) {
+    public void agregarCliente(Cliente cliente) throws Exception {
+        if (existeCorreo(cliente.getCorreo(), null)) {
+            throw new Exception("Ya existe un cliente con ese correo electrónico");
+        }
+        if (existeTelefono(cliente.getTelefono(), null)) {
+            throw new Exception("Ya existe un cliente con ese número de teléfono");
+        }
         clientes.add(cliente);
         guardarClientes();
+    }
+
+    public void modificarCliente(Cliente cliente) throws Exception {
+        if (existeCorreo(cliente.getCorreo(), cliente.getCodigo())) {
+            throw new Exception("Ya existe otro cliente con ese correo electrónico");
+        }
+        if (existeTelefono(cliente.getTelefono(), cliente.getCodigo())) {
+            throw new Exception("Ya existe otro cliente con ese número de teléfono");
+        }
+
+        for (int i = 0; i < clientes.size(); i++) {
+            if (clientes.get(i).getCodigo() == cliente.getCodigo()) {
+                clientes.set(i, cliente);
+                guardarClientes();
+                return;
+            }
+        }
+        throw new Exception("No se encontró el cliente a modificar");
+    }
+
+    public Cliente obtenerClientePorCodigo(int codigo) {
+        for (Cliente cliente : clientes) {
+            if (cliente.getCodigo() == codigo) {
+                return cliente;
+            }
+        }
+        return null;
     }
     
     public boolean validarTelefono(String telefono) {
@@ -121,5 +154,67 @@ public class GestorClientes {
         } catch (ParseException e) {
             return false;
         }
+    }
+    
+    public boolean existeCorreo(String correo, Integer exceptoCodigo) {
+        for (Cliente cliente : clientes) {
+            if (cliente.getCorreo().equalsIgnoreCase(correo)
+                    && (exceptoCodigo == null || cliente.getCodigo() != exceptoCodigo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean existeTelefono(String telefono, Integer exceptoCodigo) {
+        for (Cliente cliente : clientes) {
+            if (cliente.getTelefono().equals(telefono)
+                    && (exceptoCodigo == null || cliente.getCodigo() != exceptoCodigo)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public void eliminarCliente(int codigo) throws Exception {
+        Cliente clienteAEliminar = null;
+    
+        for (Cliente cliente : clientes) {
+            if (cliente.getCodigo() == codigo) {
+                clienteAEliminar = cliente;
+                break;
+            }
+        }
+
+        if (clienteAEliminar == null) {
+            throw new Exception("No se encontró el cliente a eliminar");
+        }
+
+        clientes.remove(clienteAEliminar);
+        guardarClientes();
+    }
+    
+    public List<Cliente> buscarClientesPorCodigo(int codigo) {
+        List<Cliente> resultados = new ArrayList<>();
+        for (Cliente cliente : clientes) {
+            if (cliente.getCodigo() == codigo) {
+                resultados.add(cliente);
+                break; // Como el código es único, podemos romper el ciclo al encontrarlo
+            }
+        }
+        return resultados;
+    }
+
+    public List<Cliente> buscarClientesPorNombreApellidos(String busqueda) {
+        List<Cliente> resultados = new ArrayList<>();
+        String busquedaLower = busqueda.toLowerCase();
+
+        for (Cliente cliente : clientes) {
+            String nombreCompleto = (cliente.getNombre() + " " + cliente.getApellidos()).toLowerCase();
+            if (nombreCompleto.contains(busquedaLower)) {
+                resultados.add(cliente);
+            }
+        }
+        return resultados;
     }
 }

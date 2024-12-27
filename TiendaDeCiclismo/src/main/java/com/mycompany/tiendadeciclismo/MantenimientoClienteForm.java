@@ -5,9 +5,15 @@
 package com.mycompany.tiendadeciclismo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -15,27 +21,116 @@ import java.util.Date;
  */
 public class MantenimientoClienteForm extends javax.swing.JFrame {
     private DivisionTerritorial divisionTerritorial;
+    private boolean modoEdicion = false;
+    private Cliente clienteEditar = null;
 
     /**
      * Creates new form MantenimientoClienteForm
      */
     public MantenimientoClienteForm() {
+        this(null);
+    }
+
+    public MantenimientoClienteForm(Cliente cliente) {
         initComponents();
+
+        // Forzar que los campos sean editables y habilitados inmediatamente después de initComponents
+        txtNombre.setEditable(true);
+        txtNombre.setEnabled(true);
+        txtApellidos.setEditable(true);
+        txtApellidos.setEnabled(true);
+        txtTelefono.setEditable(true);
+        txtTelefono.setEnabled(true);
+        txtCorreo.setEditable(true);
+        txtCorreo.setEnabled(true);
+        txtFechaNacimiento.setEditable(true);
+        txtFechaNacimiento.setEnabled(true);
+
+        // Eliminar los ActionListeners existentes
+        for (ActionListener al : txtNombre.getActionListeners()) {
+            txtNombre.removeActionListener(al);
+        }
+        for (ActionListener al : txtApellidos.getActionListeners()) {
+            txtApellidos.removeActionListener(al);
+        }
+        for (ActionListener al : txtTelefono.getActionListeners()) {
+            txtTelefono.removeActionListener(al);
+        }
+        for (ActionListener al : txtCorreo.getActionListeners()) {
+            txtCorreo.removeActionListener(al);
+        }
+        for (ActionListener al : txtFechaNacimiento.getActionListeners()) {
+            txtFechaNacimiento.removeActionListener(al);
+        }
+
         divisionTerritorial = DivisionTerritorial.getInstancia();
         inicializarCombos();
         configurarListeners();
         setLocationRelativeTo(null);
         lblMensajes.setText("");
-        configurarComponentes();
-        configurarEventosCampos();
+
+        if (cliente != null) {
+            modoEdicion = true;
+            clienteEditar = cliente;
+            setTitle("Modificar Cliente - " + cliente.getNombre());
+            cargarDatosCliente();
+        } else {
+            setTitle("Nuevo Cliente");
+            configurarComponentes();
+            configurarEventosCampos();
+        }
     }
     
+    private void cargarDatosCliente() {
+        if (clienteEditar != null) {
+            setTitle("Modificar Cliente - " + clienteEditar.getNombre());
+
+            txtCodigo.setEditable(false);
+            txtCodigo.setText(String.valueOf(clienteEditar.getCodigo()));
+
+            txtNombre.setEditable(true);
+            txtNombre.setEnabled(true);
+            txtNombre.setText(clienteEditar.getNombre());
+
+            txtApellidos.setEditable(true);
+            txtApellidos.setEnabled(true);
+            txtApellidos.setText(clienteEditar.getApellidos());
+
+            txtTelefono.setEditable(true);
+            txtTelefono.setEnabled(true);
+            txtTelefono.setText(clienteEditar.getTelefono());
+
+            txtCorreo.setEditable(true);
+            txtCorreo.setEnabled(true);
+            txtCorreo.setText(clienteEditar.getCorreo());
+
+            cmbProvincia.setSelectedItem(clienteEditar.getProvincia());
+
+            try {
+                Thread.sleep(100);
+                cmbCanton.setSelectedItem(clienteEditar.getCanton());
+                Thread.sleep(100);
+                cmbDistrito.setSelectedItem(clienteEditar.getDistrito());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            txtFechaNacimiento.setEditable(true);
+            txtFechaNacimiento.setEnabled(true);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            txtFechaNacimiento.setText(sdf.format(clienteEditar.getFechaNacimiento()));
+
+            btnGuardar.setText("Guardar");
+            txtNombre.requestFocus();
+            lblMensajes.setText("");
+        }
+    }
+    
+    
      private void configurarComponentes() {
-        // Establecer el código automáticamente
         txtCodigo.setEditable(false);
         txtCodigo.setText(String.valueOf(GestorClientes.getInstancia().obtenerSiguienteCodigo()));
-        
-        // Limpiar textos por defecto
+
         txtNombre.setText("");
         txtApellidos.setText("");
         txtTelefono.setText("");
@@ -44,20 +139,17 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
     }
     
     private void inicializarCombos() {
-        // Limpiar modelos anteriores
+
         cmbProvincia.removeAllItems();
         cmbCanton.removeAllItems();
         cmbDistrito.removeAllItems();
 
-        // Agregar provincias
         for (Division provincia : divisionTerritorial.getProvincias()) {
             cmbProvincia.addItem(provincia.getNombre());
         }
 
-        // Seleccionar San José por defecto
         cmbProvincia.setSelectedItem("San José");
 
-        // Actualizar cantones
         actualizarCantones();
     }
 
@@ -128,66 +220,125 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
     private boolean validarCampos() {
         GestorClientes gestor = GestorClientes.getInstancia();
 
-        // Validar nombre
-        if (txtNombre.getText().trim().isEmpty()) {
-            lblMensajes.setText("El nombre es obligatorio");
-            txtNombre.requestFocus();
+        if (txtNombre.getText().equals("Ingrese el nombre")) {
+            mostrarError("El nombre es obligatorio", txtNombre);
             return false;
         }
 
-        // Validar apellidos
-        if (txtApellidos.getText().trim().isEmpty()) {
-            lblMensajes.setText("Los apellidos son obligatorios");
-            txtApellidos.requestFocus();
+        if (txtApellidos.getText().equals("Ingrese los apellidos")) {
+            mostrarError("Los apellidos son obligatorios", txtApellidos);
             return false;
         }
 
-        // Validar teléfono
+        if (txtTelefono.getText().equals("Ingrese el teléfono")) {
+            mostrarError("El teléfono es obligatorio", txtTelefono);
+            return false;
+        }
+
+        if (txtCorreo.getText().equals("Ingrese el correo")) {
+            mostrarError("El correo es obligatorio", txtCorreo);
+            return false;
+        }
+
+        if (txtFechaNacimiento.getText().equals("Fecha")) {
+            mostrarError("La fecha de nacimiento es obligatoria", txtFechaNacimiento);
+            return false;
+        }
+
+        String nombre = txtNombre.getText().trim();
+        if (nombre.isEmpty()) {
+            mostrarError("El nombre es obligatorio", txtNombre);
+            return false;
+        }
+
+        String apellidos = txtApellidos.getText().trim();
+        if (apellidos.isEmpty()) {
+            mostrarError("Los apellidos son obligatorios", txtApellidos);
+            return false;
+        }
+
         String telefono = txtTelefono.getText().trim();
-        if (!gestor.validarTelefono(telefono)) {
-            lblMensajes.setText("El teléfono debe tener 8 dígitos y empezar con 2, 4, 6 u 8");
-            txtTelefono.requestFocus();
+        if (telefono.isEmpty()) {
+            mostrarError("El teléfono es obligatorio", txtTelefono);
             return false;
         }
 
-        // Validar correo
         String correo = txtCorreo.getText().trim();
+        if (correo.isEmpty()) {
+            mostrarError("El correo electrónico es obligatorio", txtCorreo);
+            return false;
+        }
+
+        if (!gestor.validarTelefono(telefono)) {
+            mostrarError("El teléfono debe tener 8 dígitos y empezar con 2, 4, 6 u 8", txtTelefono);
+            return false;
+        }
+
         if (!gestor.validarCorreo(correo)) {
-            lblMensajes.setText("El correo electrónico no tiene un formato válido");
-            txtCorreo.requestFocus();
+            mostrarError("El correo electrónico no tiene un formato válido", txtCorreo);
             return false;
         }
 
-        // Validar selección de provincia
+        try {
+            Integer exceptoCodigo = modoEdicion ? clienteEditar.getCodigo() : null;
+
+            if (gestor.existeCorreo(correo, exceptoCodigo)) {
+                mostrarError("Ya existe un cliente con ese correo electrónico", txtCorreo);
+                return false;
+            }
+
+            if (gestor.existeTelefono(telefono, exceptoCodigo)) {
+                mostrarError("Ya existe un cliente con ese número de teléfono", txtTelefono);
+                return false;
+            }
+        } catch (Exception e) {
+            mostrarError("Error al validar duplicados: " + e.getMessage(), null);
+            return false;
+        }
+        
         if (cmbProvincia.getSelectedIndex() == -1) {
-            lblMensajes.setText("Debe seleccionar una provincia");
-            cmbProvincia.requestFocus();
+            mostrarError("Debe seleccionar una provincia", cmbProvincia);
             return false;
         }
 
-        // Validar cantón
         if (cmbCanton.getSelectedIndex() == -1) {
-            lblMensajes.setText("Debe seleccionar un cantón");
-            cmbCanton.requestFocus();
+            mostrarError("Debe seleccionar un cantón", cmbCanton);
             return false;
         }
 
-        // Validar distrito
         if (cmbDistrito.getSelectedIndex() == -1) {
-            lblMensajes.setText("Debe seleccionar un distrito");
-            cmbDistrito.requestFocus();
+            mostrarError("Debe seleccionar un distrito", cmbDistrito);
             return false;
         }
 
-        // Validar fecha de nacimiento
-        String fecha = txtFechaNacimiento.getText().trim();
-        if (!gestor.validarFechaNacimiento(fecha)) {
-            lblMensajes.setText("La fecha debe tener el formato DD/MM/YYYY");
-            txtFechaNacimiento.requestFocus();
+        String fechaNacimiento = txtFechaNacimiento.getText().trim();
+        if (!gestor.validarFechaNacimiento(fechaNacimiento)) {
+            mostrarError("La fecha debe tener el formato DD/MM/YYYY", txtFechaNacimiento);
+            return false;
+        }
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            sdf.setLenient(false);
+            Date fecha = sdf.parse(fechaNacimiento);
+            if (fecha.after(new Date())) {
+                mostrarError("La fecha de nacimiento no puede ser futura", txtFechaNacimiento);
+                return false;
+            }
+        } catch (ParseException e) {
+            mostrarError("Error al validar la fecha: " + e.getMessage(), txtFechaNacimiento);
             return false;
         }
 
         return true;
+    }
+
+    private void mostrarError(String mensaje, javax.swing.JComponent componente) {
+        lblMensajes.setText(mensaje);
+        lblMensajes.setForeground(new java.awt.Color(204, 0, 0)); // Rojo para errores
+        if (componente != null) {
+            componente.requestFocus();
+        }
     }
     
   
@@ -268,6 +419,7 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
             }
         });
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -581,7 +733,6 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         try {
             GestorClientes gestor = GestorClientes.getInstancia();
 
-            // Obtener y validar datos
             String nombre = txtNombre.getText().trim();
             String apellidos = txtApellidos.getText().trim();
             String telefono = txtTelefono.getText().trim();
@@ -591,30 +742,42 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
             String distrito = (String) cmbDistrito.getSelectedItem();
             String fechaNacimiento = txtFechaNacimiento.getText().trim();
 
-            // Convertir fecha
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             Date fecha = sdf.parse(fechaNacimiento);
 
-            // Crear nuevo cliente
-            Cliente cliente = new Cliente(
-                    gestor.obtenerSiguienteCodigo(),
-                    nombre,
-                    apellidos,
-                    telefono,
-                    correo,
-                    provincia,
-                    canton,
-                    distrito,
-                    fecha
-            );
+            Cliente cliente;
+            if (modoEdicion) {
 
-            // Guardar cliente
-            gestor.agregarCliente(cliente);
+                cliente = new Cliente(
+                        clienteEditar.getCodigo(), 
+                        nombre,
+                        apellidos,
+                        telefono,
+                        correo,
+                        provincia,
+                        canton,
+                        distrito,
+                        fecha
+                );
+                gestor.modificarCliente(cliente);
+                lblMensajes.setText("Cliente modificado exitosamente");
+            } else {
 
-            // Mostrar mensaje de éxito
-            lblMensajes.setText("Cliente guardado exitosamente");
+                cliente = new Cliente(
+                        gestor.obtenerSiguienteCodigo(),
+                        nombre,
+                        apellidos,
+                        telefono,
+                        correo,
+                        provincia,
+                        canton,
+                        distrito,
+                        fecha
+                );
+                gestor.agregarCliente(cliente);
+                lblMensajes.setText("Cliente guardado exitosamente");
+            }
 
-            // Volver al formulario de registro
             RegistroClientesForm registroClientes = new RegistroClientesForm();
             registroClientes.setVisible(true);
             this.dispose();
@@ -622,7 +785,7 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         } catch (ParseException e) {
             lblMensajes.setText("Error en el formato de la fecha");
         } catch (Exception e) {
-            lblMensajes.setText("Error al guardar el cliente: " + e.getMessage());
+            lblMensajes.setText("Error al " + (modoEdicion ? "modificar" : "guardar") + " el cliente: " + e.getMessage());
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 

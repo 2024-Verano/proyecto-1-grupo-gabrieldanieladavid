@@ -44,7 +44,7 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Hace que ninguna celda sea editable
+                return false; 
             }
         };
 
