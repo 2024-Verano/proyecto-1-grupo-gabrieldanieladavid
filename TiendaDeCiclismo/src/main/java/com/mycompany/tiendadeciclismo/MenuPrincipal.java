@@ -4,6 +4,7 @@
  */
 package com.mycompany.tiendadeciclismo;
 
+import com.mycompany.tiendadeciclismo.mantenimiento.ParteGrafica.ServicioMantenimientoForm;
 import com.mycompany.tiendadeciclismo.productos.CRUDArticulos;
 
 /**
@@ -129,7 +130,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistroProductosActionPerformed
 
     private void btnServicioMantenimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicioMantenimientoActionPerformed
-        System.out.println("Servicio de mantenimiento");
+        ServicioMantenimientoForm registroMantenimiento = new ServicioMantenimientoForm();
+        registroMantenimiento.setVisible(true);
+        this.dispose(); 
     }//GEN-LAST:event_btnServicioMantenimientoActionPerformed
 
     private void btnFacturacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturacionActionPerformed
