@@ -5,6 +5,8 @@
 package com.mycompany.tiendadeciclismo.productos;
 
 import com.mycompany.tiendadeciclismo.MenuPrincipal;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,9 +15,11 @@ import com.mycompany.tiendadeciclismo.MenuPrincipal;
 public class CRUDArticulos extends javax.swing.JFrame {
 
     private gestorTProductosArticulos gestionProducto;
+   
     public CRUDArticulos() {
         initComponents();
         gestionProducto = new gestorTProductosArticulos();
+        CargarTabla();
     }
 
     /**
@@ -36,11 +40,12 @@ public class CRUDArticulos extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         btnVolver = new javax.swing.JButton();
         textoNombre = new javax.swing.JTextField();
-        textoCodigo1 = new javax.swing.JTextField();
+        textoCodigo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaArticulos = new javax.swing.JTable();
+        labelMensaje = new javax.swing.JLabel();
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel2.setText("Gestionar Productos");
@@ -54,13 +59,37 @@ public class CRUDArticulos extends javax.swing.JFrame {
             }
         });
 
+        btnAgregarArticulos.setBackground(new java.awt.Color(0, 204, 0));
+        btnAgregarArticulos.setForeground(new java.awt.Color(255, 255, 255));
         btnAgregarArticulos.setText("Agregar Articulos");
+        btnAgregarArticulos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarArticulosActionPerformed(evt);
+            }
+        });
 
         btnBuscarArticulos.setText("Buscar Articulos");
+        btnBuscarArticulos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarArticulosActionPerformed(evt);
+            }
+        });
 
         btnModificarArticulos.setText("Modificar Articulos");
+        btnModificarArticulos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarArticulosActionPerformed(evt);
+            }
+        });
 
+        btnEliminarArticulos.setBackground(new java.awt.Color(204, 0, 0));
+        btnEliminarArticulos.setForeground(new java.awt.Color(255, 255, 255));
         btnEliminarArticulos.setText("Eliminar Articulos");
+        btnEliminarArticulos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarArticulosActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel3.setText("Gestionar Articulos");
@@ -74,13 +103,11 @@ public class CRUDArticulos extends javax.swing.JFrame {
 
         textoNombre.setText(" ");
 
-        textoCodigo1.setText(" ");
-
         jLabel1.setText("Nombre: ");
 
         jLabel4.setText("Codigo: ");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaArticulos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -89,7 +116,7 @@ public class CRUDArticulos extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false, false, false, false, false
@@ -103,10 +130,7 @@ public class CRUDArticulos extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-        }
+        jScrollPane1.setViewportView(tablaArticulos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -126,7 +150,7 @@ public class CRUDArticulos extends javax.swing.JFrame {
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel4)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(textoCodigo1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(textoCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jLabel1))
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,7 +168,10 @@ public class CRUDArticulos extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(btnModificarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                                        .addComponent(btnEliminarArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(labelMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -152,16 +179,18 @@ public class CRUDArticulos extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addComponent(jLabel3)
-                .addGap(32, 32, 32)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labelMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBuscarArticulos)
                     .addComponent(textoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textoCodigo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textoCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregarArticulos)
                     .addComponent(btnEliminarArticulos)
@@ -188,6 +217,99 @@ public class CRUDArticulos extends javax.swing.JFrame {
         
         
     }//GEN-LAST:event_btnGestionarProductosActionPerformed
+
+    private void btnAgregarArticulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarArticulosActionPerformed
+        if (gestionProducto.getListaTProducto().isEmpty()){
+            labelMensaje.setText("Primero se debe crear al menos 1 tipo de producto");
+        }
+        else {
+            AgregarArticulo agregar = new AgregarArticulo(null);
+            agregar.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnAgregarArticulosActionPerformed
+
+    private void btnBuscarArticulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarArticulosActionPerformed
+       ArrayList<Articulo> listaArticulos = gestionProducto.getListaArticulos();
+    DefaultTableModel model = (DefaultTableModel) tablaArticulos.getModel();
+    model.setRowCount(0); // Limpiar tabla
+
+    int codigo = -1;
+    String nombre = textoNombre.getText().trim();
+
+    // Validar entrada de código
+    if (!textoCodigo.getText().isEmpty()) {
+        try {
+            codigo = Integer.parseInt(textoCodigo.getText().trim());
+            labelMensaje.setText(" ");
+        } catch (NumberFormatException e) {
+            labelMensaje.setText("El código debe ser un número");
+            return; // Salir si el código no es válido
+        }
+    }
+
+    // Si ambos campos están vacíos, cargar todos los productos
+    if (nombre.isEmpty() && codigo == -1) {
+        CargarTabla();
+        return;
+    }
+
+    // Buscar en la lista de productos
+    boolean encontrado = false;
+    for (Articulo articulo : listaArticulos) {
+        // Comparar por nombre o código
+        if ((!nombre.isEmpty() && articulo.getNombre().equalsIgnoreCase(nombre)) ||
+            (codigo != -1 && articulo.getCodigo() == codigo)) {
+            model.addRow(new Object[]{
+                articulo.getCodigo(),
+                articulo.getCodigoTipoProducto(),
+                articulo.getNombre(),
+                articulo.getTipo(),
+                articulo.getTamano(),
+                articulo.getMarca(),
+                articulo.getPrecio(),
+                articulo.getCantidad()
+            });
+            encontrado = true;
+        }
+    }
+
+    // Mostrar mensaje si no hay resultados
+    if (!encontrado) {
+        labelMensaje.setText("No se encontraron articulos con los criterios ingresados.");
+    }
+    }//GEN-LAST:event_btnBuscarArticulosActionPerformed
+
+    private void btnModificarArticulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarArticulosActionPerformed
+        int seleccion = tablaArticulos.getSelectedRow();
+        if (seleccion == -1){
+            labelMensaje.setText("Primero Seleccione un tipo de producto");
+            
+        }
+        else {
+            int codigo = Integer.parseInt(tablaArticulos.getValueAt(seleccion, 0).toString());
+            Articulo modificar = gestionProducto.buscarArticulo(codigo);
+            ModificarArticulo panelModificar = new ModificarArticulo(modificar);
+            panelModificar.setVisible(true);
+            this.dispose();
+        }
+        
+    }//GEN-LAST:event_btnModificarArticulosActionPerformed
+
+    private void btnEliminarArticulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarArticulosActionPerformed
+        int seleccion = tablaArticulos.getSelectedRow();
+        if (seleccion == -1){
+            labelMensaje.setText("Primero Seleccione un tipo de producto");
+            
+        }
+        else {
+            int codigo = Integer.parseInt(tablaArticulos.getValueAt(seleccion, 0).toString());
+            Articulo eliminar = gestionProducto.buscarArticulo(codigo);
+            EliminarArticulo panelModificar = new EliminarArticulo(eliminar);
+            panelModificar.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnEliminarArticulosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -227,7 +349,27 @@ public class CRUDArticulos extends javax.swing.JFrame {
     public gestorTProductosArticulos getGestor(){
         return gestionProducto;
     }
-    
+    private void CargarTabla(){
+        ArrayList<Articulo> listaArticulos = gestionProducto.getListaArticulos();
+        DefaultTableModel model = (DefaultTableModel) tablaArticulos.getModel();
+        model.setRowCount(0); // Limpiar tabla
+        
+        for (Articulo articulo : listaArticulos){
+            
+            
+            model.addRow(new Object[]{
+                articulo.getCodigo(),
+                articulo.getCodigoTipoProducto(),
+                articulo.getNombre(),
+                articulo.getTipo(),
+                articulo.getTamano(),
+                articulo.getMarca(),
+                articulo.getPrecio(),
+                articulo.getCantidad()
+            
+            });
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarArticulos;
     private javax.swing.JButton btnBuscarArticulos;
@@ -240,8 +382,9 @@ public class CRUDArticulos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField textoCodigo1;
+    private javax.swing.JLabel labelMensaje;
+    private javax.swing.JTable tablaArticulos;
+    private javax.swing.JTextField textoCodigo;
     private javax.swing.JTextField textoNombre;
     // End of variables declaration//GEN-END:variables
 }

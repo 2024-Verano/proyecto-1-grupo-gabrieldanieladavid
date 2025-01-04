@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="135" max="-2" attributes="0"/>
+                      <Component id="TITULO" min="-2" pref="100" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="labelNombre5" min="-2" pref="92" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="comboTamano" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="labelMarca" alignment="1" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
+                                      <Component id="labelMensaje" max="32767" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="btnGuardar" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="labelTipo" min="-2" pref="237" max="-2" attributes="0"/>
+                                          <Component id="labelNombre" min="-2" pref="237" max="-2" attributes="0"/>
+                                          <Group type="102" attributes="0">
+                                              <Component id="labelNombre1" min="-2" pref="92" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="textNombre" min="-2" pref="204" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Component id="labelCodigo" alignment="0" min="-2" pref="237" max="-2" attributes="0"/>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="labelNombre2" min="-2" pref="92" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="textCodigoTProducto" max="32767" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="labelNombre3" min="-2" pref="92" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="comboTipo" max="32767" attributes="0"/>
+                                          </Group>
+                                          <Component id="labelTamano" max="32767" attributes="0"/>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="labelNombre6" min="-2" pref="92" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="textMarca" max="32767" attributes="0"/>
+                                          </Group>
+                                          <Component id="labelPrecio" alignment="0" max="32767" attributes="0"/>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="labelNombre4" min="-2" pref="92" max="-2" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
+                                              <Component id="textPrecio" min="-2" pref="204" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Component id="labelCantidad" alignment="0" max="32767" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="labelNombre7" min="-2" pref="92" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="textCantidad" min="-2" pref="204" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                  </Group>
+              </Group>
+              <EmptySpace pref="29" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnVolver" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="TITULO" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="labelNombre" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelNombre1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="textNombre" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="labelCodigo" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelNombre2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="textCodigoTProducto" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="labelTipo" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelNombre3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="comboTipo" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="labelTamano" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="comboTamano" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="labelNombre5" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="labelMarca" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelNombre6" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="textMarca" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="labelPrecio" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelNombre4" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="textPrecio" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="labelCantidad" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="labelNombre7" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="textCantidad" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="btnVolver" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnGuardar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="1" max="32767" attributes="0"/>
+                  </Group>
+                  <Component id="labelMensaje" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JLabel" name="TITULO">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="24" style="1"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Art&#xed;culo"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelNombre">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nombre:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelNombre1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nuevo Nombre:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="textNombre">
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelCodigo">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Codigo del tipo:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelNombre2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nuevo Codigo: "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="textCodigoTProducto">
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelTipo">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Tipo:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelNombre3">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nuevo Tipo: "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="comboTipo">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="3">
+            <StringItem index="0" value="Bicicleta"/>
+            <StringItem index="1" value="Accesiorios"/>
+            <StringItem index="2" value="Suplementos Alimenticios"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboTipoActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelTamano">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Tama&#xf1;o:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelNombre4">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nuevo Precio:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="comboTamano">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="6">
+            <StringItem index="0" value="12"/>
+            <StringItem index="1" value="16"/>
+            <StringItem index="2" value="22"/>
+            <StringItem index="3" value="27"/>
+            <StringItem index="4" value="27.5"/>
+            <StringItem index="5" value="29"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelMarca">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Marca: "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelNombre5">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nuevo Tama&#xf1;o: "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="textPrecio">
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelPrecio">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Precio: "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelNombre6">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nueva Marca:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="textMarca">
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelCantidad">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Cantidad:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelNombre7">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Nueva Cantidad:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="textCantidad">
+    </Component>
+    <Component class="javax.swing.JButton" name="btnVolver">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Volver"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVolverActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnGuardar">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="99" green="ff" red="99" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Guardar"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGuardarActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="labelMensaje">
+    </Component>
+  </SubComponents>
+</Form>

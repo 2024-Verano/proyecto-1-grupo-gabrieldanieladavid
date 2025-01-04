@@ -294,7 +294,17 @@ public class CRUDTproducto extends javax.swing.JFrame {
         }
         else {
             int codigo = Integer.parseInt(tablaProductos.getValueAt(seleccion, 0).toString());
+            
+            for (Articulo x : gestionProducto.getListaArticulos()){
+                if (x.getCodigoTipoProducto() == codigo){
+                    labelError.setText("No se puede eliminar este tipo de producto, primero elimine los articulos asociados");
+                    return;
+                
+                }
+            }
+            
             TProducto eliminar = gestionProducto.buscarTProducto(codigo);
+            
             EliminarProducto panelEliminar = new EliminarProducto(eliminar);
             panelEliminar.setVisible(true);
             this.dispose();

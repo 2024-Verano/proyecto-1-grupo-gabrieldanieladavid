@@ -20,13 +20,30 @@ public class gestorTProductosArticulos {
    private ArrayList<TProducto> ListaTProductos;
    private ArrayList<Articulo> ListaArticulos;
    private static final String ARCHIVO_TPRODUCTO = "tproductos.txt"; 
+   private static final String ARCHIVO_ARTICULOS = "articulos.txt"; 
    
    public gestorTProductosArticulos(){
        ListaTProductos = new ArrayList<>();
        cargarTProductos();
        ListaArticulos = new ArrayList<>();
-       
+       cargarArticulos();
    }
+   
+   private void cargarArticulos(){
+       try (BufferedReader br = new BufferedReader(new FileReader(ARCHIVO_ARTICULOS))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split(",");
+                if (datos.length == 8) {
+                    ListaArticulos.add(new Articulo(Integer.parseInt(datos[0].trim()), Integer.parseInt(datos[1].trim()), datos[2].trim(), datos[3].trim(), Float.parseFloat(datos[4].trim()), datos[5].trim(), Integer.parseInt(datos[6].trim()), Integer.parseInt(datos[7].trim())));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error al cargar productos: " + e.getMessage());
+        }
+   }
+   
+   
    
    private void cargarTProductos() {
         try (BufferedReader br = new BufferedReader(new FileReader(ARCHIVO_TPRODUCTO))) {
@@ -48,7 +65,21 @@ public class gestorTProductosArticulos {
             for (TProducto producto : ListaTProductos) {
                 bw.write(producto.toString());
                 bw.newLine();
-                System.out.println("se guardo");
+               
+            }
+        } catch (IOException e) {
+            System.err.println("Error al guardar productos: " + e.getMessage());
+        }
+    
+   }
+   
+   public void guardarArticulos() {
+      
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_ARTICULOS))) {
+            for (Articulo x : ListaArticulos) {
+                bw.write(x.toString());
+                bw.newLine();
+               
             }
         } catch (IOException e) {
             System.err.println("Error al guardar productos: " + e.getMessage());
@@ -64,12 +95,24 @@ public class gestorTProductosArticulos {
            return ListaTProductos;
        }
    }
+   public ArrayList<Articulo> getListaArticulos(){
+       if (ListaArticulos == null){
+           return new ArrayList<>(ListaArticulos);
+       }
+       else{
+           return ListaArticulos;
+       }
+   }
+   
+   //Funcion para imprimir los productos
    public void imprimirProductos(){
        for (TProducto x : ListaTProductos){
            System.out.println("Codigo: " + x.getCodigo() + "   Nombre: " + x.getNombre());
        }
    }
    
+   
+   //Funcion para buscar por codigo en los tipos de productos
    public TProducto buscarTProducto(int codigo){
        for (TProducto x : ListaTProductos){
            if (x.getCodigo() == codigo){
@@ -78,5 +121,37 @@ public class gestorTProductosArticulos {
        }
        return null;
    }
+   
+   public Boolean verificarTProducto(int codigo){
+       for (TProducto x : ListaTProductos){
+           if (x.getCodigo() == codigo){
+               return true;
+           }
+       }
+       return false;
+   }
+   
+   
+   
+   //Metodo para buscar por codigo en los articulos:
+   public Articulo buscarArticulo(int codigo) {
+        for (Articulo x : ListaArticulos) {
+            if (x.getCodigo() == codigo) { // Compara el código
+                return x; // Retorna el artículo encontrado
+            }
+        }
+        return null; // Retorna null si no encuentra el artículo
+    }
+   
+   // Método para buscar un artículo por nombre
+    public Articulo buscarArticulo(String nombre) {
+        for (Articulo x : ListaArticulos) {
+            if (x.getNombre().equals(nombre.trim())) { 
+                return x; // Retorna el artículo encontrado
+            }
+        }
+        return null; // Retorna null si no encuentra el artículo
+    }
+   
    
 }

@@ -14,18 +14,18 @@ public class Articulo {
     private int codigoTipoProducto;
     private String nombre;
     private String tipo;
-    private int tamano;
+    private float tamano;
     private String marca;
     private int precio;
     private int cantidad;
     
  //////////////////// Metodos ////////////////////////
-    public Articulo(ArrayList<Articulo> ListaArticulos, int TPcodigo, String nombre, String tipo, int tamano, String marca, int precio, int cantidad){
+    public Articulo(ArrayList<Articulo> ListaArticulos, int TPcodigo, String nombre, String tipo, float tamano, String marca, int precio, int cantidad){
         int contador = 0; 
         for (Articulo x : ListaArticulos ){
             contador = contador + 1;
         }
-        
+        this.codigo = contador;
         codigoTipoProducto = TPcodigo;
         
         this.nombre = nombre;
@@ -38,7 +38,21 @@ public class Articulo {
         
      
     }
-    
+     public Articulo(int codigo, int TPcodigo, String nombre, String tipo, float tamano, String marca, int precio, int cantidad){
+        
+        this.codigo = codigo;
+        codigoTipoProducto = TPcodigo;
+        
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.tamano = tamano;
+        this.marca = marca;
+        this.precio = precio;
+        this.cantidad = cantidad;
+        
+        
+     
+    }
     
     
     // Getters
@@ -58,7 +72,7 @@ public class Articulo {
         return tipo;
     }
 
-    public int getTamano() {
+    public float getTamano() {
         return tamano;
     }
 
@@ -92,7 +106,7 @@ public class Articulo {
         this.tipo = tipo;
     }
 
-    public void setTamano(int tamano) {
+    public void setTamano(float tamano) {
         this.tamano = tamano;
     }
 
@@ -108,6 +122,10 @@ public class Articulo {
         this.cantidad = cantidad;
     }
     
+    @Override
+    public String toString(){
+        return "" + codigo + "," + codigoTipoProducto + "," + nombre + "," + tipo + "," + tamano + "," + marca + "," + precio + "," + cantidad; 
+    }
 }
 
 
