@@ -53,30 +53,31 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
     }
     
     private void actualizarTotales() {
-        double subtotal = 0;
+        int subtotal = 0;
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
 
         for (int i = 0; i < model.getRowCount(); i++) {
             String totalStr = model.getValueAt(i, 4).toString()
-                    .replace("₡", "") 
-                    .replace(",", "") 
-                    .replace(" ", "") 
-                    .trim();            
+                    .replace("₡", "")
+                    .replace(",", "")
+                    .replace(" ", "")
+                    .trim();
 
             try {
-                double valor = Double.parseDouble(totalStr);
+                int valor = Integer.parseInt(totalStr); 
                 subtotal += valor;
             } catch (NumberFormatException e) {
                 System.err.println("Error al parsear valor: " + totalStr);
             }
         }
 
-        double iva = Math.round(subtotal * 0.13 * 100.0) / 100.0;  // Redondear a 2 decimales
-        double total = subtotal + iva;
+        int iva = (int) (subtotal * 0.13); 
+        int total = subtotal + iva;
 
-        txtSubtotal.setText(String.format("₡%.2f", subtotal));
-        txtIVA.setText(String.format("₡%.2f", iva));
-        txtTotal.setText(String.format("₡%.2f", total));
+        // Modificar formato para mostrar enteros
+        txtSubtotal.setText(String.format("₡%d", subtotal));
+        txtIVA.setText(String.format("₡%d", iva));
+        txtTotal.setText(String.format("₡%d", total));
     }
    
 
@@ -475,10 +476,10 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             Date fecha = sdf.parse(txtFecha.getText());
 
-            double subtotal = Double.parseDouble(txtSubtotal.getText().replace("₡", "").replace(",", "").trim());
-            double iva = Double.parseDouble(txtIVA.getText().replace("₡", "").replace(",", "").trim());
-            double total = Double.parseDouble(txtTotal.getText().replace("₡", "").replace(",", "").trim());
-
+            int subtotal = Integer.parseInt(txtSubtotal.getText().replace("₡", "").replace(",", "").trim());
+            int iva = Integer.parseInt(txtIVA.getText().replace("₡", "").replace(",", "").trim());
+            int total = Integer.parseInt(txtTotal.getText().replace("₡", "").replace(",", "").trim());
+            
             Factura factura = new Factura(numeroFactura, codigoCliente, fecha);
             factura.setSubtotal(subtotal);
             factura.setIva(iva);
@@ -487,14 +488,14 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
             for (int i = 0; i < model.getRowCount(); i++) {
                 int codigoArticulo = Integer.parseInt(model.getValueAt(i, 0).toString());
                 int cantidad = Integer.parseInt(model.getValueAt(i, 2).toString());
-                double precioUnitario = Double.parseDouble(model.getValueAt(i, 3).toString()
+                int precioUnitario = Integer.parseInt(model.getValueAt(i, 3).toString()
                         .replace("₡", "").replace(",", "").trim());
 
                 DetalleFactura detalle = new DetalleFactura(
                         numeroFactura,
                         codigoArticulo,
                         cantidad,
-                        precioUnitario
+                        precioUnitario 
                 );
 
                 factura.getDetalles().add(detalle);
@@ -549,16 +550,16 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
             Articulo articulo = dialog.getArticuloElegido();
             int cantidad = dialog.getCantidadElegida();
 
-            double precioUnitario = articulo.getPrecio();
-            double total = cantidad * precioUnitario;
+            int precioUnitario = articulo.getPrecio(); 
+            int total = cantidad * precioUnitario;
 
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.addRow(new Object[]{
                 articulo.getCodigo(),
                 articulo.getNombre(),
                 cantidad,
-                precioUnitario, 
-                total 
+                String.format("₡%d", precioUnitario),
+                String.format("₡%d", total) 
             });
 
             actualizarTotales();

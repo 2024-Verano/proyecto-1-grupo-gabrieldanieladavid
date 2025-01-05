@@ -8,9 +8,9 @@ public class Factura {
     private int codigoCliente;
     private Date fecha;
     private String estado; // "Válido" o "Anulado"
-    private double subtotal;
-    private double iva;
-    private double total;
+    private int subtotal;
+    private int iva;
+    private int total;
     private ArrayList<DetalleFactura> detalles;
     
     public Factura(int numeroFactura, int codigoCliente, Date fecha) {
@@ -28,38 +28,47 @@ public class Factura {
     public int getCodigoCliente() { return codigoCliente; }
     public Date getFecha() { return fecha; }
     public String getEstado() { return estado; }
-    public double getSubtotal() { return subtotal; }
-    public double getIva() { return iva; }
-    public double getTotal() { return total; }
-    public ArrayList<DetalleFactura> getDetalles() { return detalles; }
-    
-    public void setEstado(String estado) { this.estado = estado; }
-    
-    public void setSubtotal(double subtotal) {
+    public int getSubtotal() {
+        return subtotal;
+    }
+
+    public int getIva() {
+        return iva;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setSubtotal(int subtotal) {
         this.subtotal = subtotal;
     }
 
-    public void setIva(double iva) {
+    public void setIva(int iva) {
         this.iva = iva;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(int total) {
         this.total = total;
     }
+    
+    public ArrayList<DetalleFactura> getDetalles() { return detalles; }
+    
+    public void setEstado(String estado) { this.estado = estado; }
     
     public void calcularTotales() {
         subtotal = 0;
         for (DetalleFactura detalle : detalles) {
             subtotal += detalle.getTotal();
         }
-        iva = subtotal * 0.13;
+        iva = (int) (subtotal * 0.13); 
         total = subtotal + iva;
     }
     
     @Override
     public String toString() {
-        return String.format("%d,%d,%tF,%s,%.2f,%.2f,%.2f", 
-            numeroFactura, codigoCliente, fecha, estado, subtotal, iva, total);
+        return String.format("%d,%d,%tF,%s,%d,%d,%d", // Cambiar %.2f a %d
+                numeroFactura, codigoCliente, fecha, estado, subtotal, iva, total);
     }
     
     
