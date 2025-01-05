@@ -213,6 +213,7 @@ public class GestorClientes {
             String nombreCompleto = (cliente.getNombre() + " " + cliente.getApellidos()).toLowerCase();
             if (nombreCompleto.contains(busquedaLower)) {
                 resultados.add(cliente);
+                
             }
         }
         return resultados;

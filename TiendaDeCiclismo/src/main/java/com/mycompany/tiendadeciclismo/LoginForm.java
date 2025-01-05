@@ -15,9 +15,11 @@ public class LoginForm extends javax.swing.JFrame {
      */
     private GestorUsuarios gestorUsuarios;
     
+    
     public LoginForm() {
         initComponents();
         gestorUsuarios = new GestorUsuarios();
+        
         setLocationRelativeTo(null);
         configurarComponentes();
     }
@@ -210,7 +212,7 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIngresar;
     private javax.swing.JLabel jLabel1;
