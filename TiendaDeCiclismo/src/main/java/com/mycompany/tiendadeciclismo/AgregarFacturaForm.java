@@ -4,6 +4,11 @@
  */
 package com.mycompany.tiendadeciclismo;
 
+import com.mycompany.tiendadeciclismo.productos.Articulo;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author dnlal
@@ -13,9 +18,51 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
     /**
      * Creates new form AgregarFacturaForm
      */
+    
+    private GestorFacturas gestorFacturas;
+    private GestorClientes gestorClientes;
+    
     public AgregarFacturaForm() {
         initComponents();
+        gestorFacturas = GestorFacturas.getInstancia();
+        gestorClientes = GestorClientes.getInstancia();
+        
+        txtNumFactura.setText(String.valueOf(gestorFacturas.obtenerSiguienteNumero()));
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        txtFecha.setText(sdf.format(new Date()));
+        
+        cargarClientes();
+        
+        setLocationRelativeTo(null);
+        lblMensajes.setText("");
     }
+    
+    private void cargarClientes() {
+        cmbCliente.removeAllItems();
+        for (Cliente cliente : gestorClientes.getClientes()) {
+            cmbCliente.addItem(cliente.getCodigo() + " - "
+                    + cliente.getNombre() + " "
+                    + cliente.getApellidos());
+        }
+    }
+    
+    private void actualizarTotales() {
+        double subtotal = 0;
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            subtotal += Double.parseDouble(model.getValueAt(i, 4).toString());
+        }
+
+        double iva = subtotal * 0.13;
+        double total = subtotal + iva;
+
+        txtSubtotal.setText(String.format("₡%.2f", subtotal));
+        txtIVA.setText(String.format("₡%.2f", iva));
+        txtTotal.setText(String.format("₡%.2f", total));
+    }
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -34,24 +81,24 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         txtNumFactura = new javax.swing.JTextField();
-        txtNumFactura1 = new javax.swing.JTextField();
-        txtNumFactura2 = new javax.swing.JTextField();
-        cmbProvincia = new javax.swing.JComboBox<>();
+        txtFecha = new javax.swing.JTextField();
+        txtEstado = new javax.swing.JTextField();
+        cmbCliente = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
-        btnNuevaFactura = new javax.swing.JButton();
-        btnAnular = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         lblMensajes = new javax.swing.JLabel();
         tableFacturacion = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        btnNuevaFactura1 = new javax.swing.JButton();
+        btnAgregarArticulo = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        txtNumFactura3 = new javax.swing.JTextField();
-        txtNumFactura4 = new javax.swing.JTextField();
-        txtNumFactura6 = new javax.swing.JTextField();
+        txtSubtotal = new javax.swing.JTextField();
+        txtIVA = new javax.swing.JTextField();
+        txtTotal = new javax.swing.JTextField();
 
         txtNumFactura5.setEditable(false);
         txtNumFactura5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -88,25 +135,25 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
             }
         });
 
-        txtNumFactura1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtNumFactura1.setText("dd/mm/aaaa");
-        txtNumFactura1.addActionListener(new java.awt.event.ActionListener() {
+        txtFecha.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtFecha.setText("dd/mm/aaaa");
+        txtFecha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNumFactura1ActionPerformed(evt);
+                txtFechaActionPerformed(evt);
             }
         });
 
-        txtNumFactura2.setEditable(false);
-        txtNumFactura2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtNumFactura2.setText("Válido");
-        txtNumFactura2.addActionListener(new java.awt.event.ActionListener() {
+        txtEstado.setEditable(false);
+        txtEstado.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtEstado.setText("Válido");
+        txtEstado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNumFactura2ActionPerformed(evt);
+                txtEstadoActionPerformed(evt);
             }
         });
 
-        cmbProvincia.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        cmbProvincia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbCliente.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cmbCliente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -115,19 +162,19 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cmbProvincia, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmbCliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(txtNumFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(34, 34, 34)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNumFactura1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
                         .addGap(38, 38, 38)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
-                            .addComponent(txtNumFactura2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(53, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -143,18 +190,18 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
                         .addGap(22, 22, 22)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNumFactura2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtNumFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNumFactura1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel5)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmbProvincia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(14, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -166,22 +213,22 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel6.setText("Detalle de Artículos");
 
-        btnNuevaFactura.setBackground(new java.awt.Color(51, 153, 0));
-        btnNuevaFactura.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        btnNuevaFactura.setText("Guardar");
-        btnNuevaFactura.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardar.setBackground(new java.awt.Color(51, 153, 0));
+        btnGuardar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevaFacturaActionPerformed(evt);
+                btnGuardarActionPerformed(evt);
             }
         });
 
-        btnAnular.setBackground(new java.awt.Color(204, 0, 0));
-        btnAnular.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        btnAnular.setText("Cancelar");
-        btnAnular.setActionCommand("Modificar");
-        btnAnular.addActionListener(new java.awt.event.ActionListener() {
+        btnCancelar.setBackground(new java.awt.Color(204, 0, 0));
+        btnCancelar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnCancelar.setText("Cancelar");
+        btnCancelar.setActionCommand("Modificar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAnularActionPerformed(evt);
+                btnCancelarActionPerformed(evt);
             }
         });
 
@@ -200,9 +247,9 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnNuevaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27)
-                        .addComponent(btnAnular, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(63, 63, 63))))
         );
         jPanel4Layout.setVerticalGroup(
@@ -210,8 +257,8 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAnular)
-                    .addComponent(btnNuevaFactura))
+                    .addComponent(btnCancelar)
+                    .addComponent(btnGuardar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblMensajes)
                 .addContainerGap(12, Short.MAX_VALUE))
@@ -246,12 +293,12 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
         jTable1.getTableHeader().setReorderingAllowed(false);
         tableFacturacion.setViewportView(jTable1);
 
-        btnNuevaFactura1.setBackground(new java.awt.Color(0, 51, 255));
-        btnNuevaFactura1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        btnNuevaFactura1.setText("Agregar artículo");
-        btnNuevaFactura1.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregarArticulo.setBackground(new java.awt.Color(0, 51, 255));
+        btnAgregarArticulo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnAgregarArticulo.setText("Agregar artículo");
+        btnAgregarArticulo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNuevaFactura1ActionPerformed(evt);
+                btnAgregarArticuloActionPerformed(evt);
             }
         });
 
@@ -264,30 +311,30 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel9.setText("Total: ");
 
-        txtNumFactura3.setEditable(false);
-        txtNumFactura3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtNumFactura3.setText("₡0");
-        txtNumFactura3.addActionListener(new java.awt.event.ActionListener() {
+        txtSubtotal.setEditable(false);
+        txtSubtotal.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtSubtotal.setText("₡0");
+        txtSubtotal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNumFactura3ActionPerformed(evt);
+                txtSubtotalActionPerformed(evt);
             }
         });
 
-        txtNumFactura4.setEditable(false);
-        txtNumFactura4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtNumFactura4.setText("₡0");
-        txtNumFactura4.addActionListener(new java.awt.event.ActionListener() {
+        txtIVA.setEditable(false);
+        txtIVA.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtIVA.setText("₡0");
+        txtIVA.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNumFactura4ActionPerformed(evt);
+                txtIVAActionPerformed(evt);
             }
         });
 
-        txtNumFactura6.setEditable(false);
-        txtNumFactura6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtNumFactura6.setText("₡0");
-        txtNumFactura6.addActionListener(new java.awt.event.ActionListener() {
+        txtTotal.setEditable(false);
+        txtTotal.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtTotal.setText("₡0");
+        txtTotal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNumFactura6ActionPerformed(evt);
+                txtTotalActionPerformed(evt);
             }
         });
 
@@ -306,7 +353,7 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnNuevaFactura1, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(btnAgregarArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -316,9 +363,9 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
                             .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtNumFactura3, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-                            .addComponent(txtNumFactura4)
-                            .addComponent(txtNumFactura6))))
+                            .addComponent(txtSubtotal, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                            .addComponent(txtIVA)
+                            .addComponent(txtTotal))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -329,20 +376,20 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(btnNuevaFactura1))
+                            .addComponent(btnAgregarArticulo))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(tableFacturacion, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
-                            .addComponent(txtNumFactura3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtSubtotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel8))
-                    .addComponent(txtNumFactura4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtIVA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
-                    .addComponent(txtNumFactura6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -385,41 +432,58 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNumFacturaActionPerformed
 
-    private void txtNumFactura1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumFactura1ActionPerformed
+    private void txtFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNumFactura1ActionPerformed
+    }//GEN-LAST:event_txtFechaActionPerformed
 
-    private void txtNumFactura2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumFactura2ActionPerformed
+    private void txtEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNumFactura2ActionPerformed
+    }//GEN-LAST:event_txtEstadoActionPerformed
 
-    private void btnNuevaFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaFacturaActionPerformed
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
 
-    }//GEN-LAST:event_btnNuevaFacturaActionPerformed
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
-    private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
 
-    }//GEN-LAST:event_btnAnularActionPerformed
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
-    private void btnNuevaFactura1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaFactura1ActionPerformed
+    private void btnAgregarArticuloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarArticuloActionPerformed
+        SeleccionArticuloDialog dialog = new SeleccionArticuloDialog(this);
+        dialog.setVisible(true);
+
+        if (dialog.isArticuloSeleccionado()) {
+            Articulo articulo = dialog.getArticuloElegido();
+            int cantidad = dialog.getCantidadElegida();
+
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.addRow(new Object[]{
+                articulo.getCodigo(),
+                articulo.getNombre(),
+                cantidad,
+                articulo.getPrecio(),
+                cantidad * articulo.getPrecio()
+            });
+
+            actualizarTotales();
+        }
+    }//GEN-LAST:event_btnAgregarArticuloActionPerformed
+
+    private void txtSubtotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSubtotalActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnNuevaFactura1ActionPerformed
+    }//GEN-LAST:event_txtSubtotalActionPerformed
 
-    private void txtNumFactura3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumFactura3ActionPerformed
+    private void txtIVAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIVAActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNumFactura3ActionPerformed
-
-    private void txtNumFactura4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumFactura4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNumFactura4ActionPerformed
+    }//GEN-LAST:event_txtIVAActionPerformed
 
     private void txtNumFactura5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumFactura5ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNumFactura5ActionPerformed
 
-    private void txtNumFactura6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumFactura6ActionPerformed
+    private void txtTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNumFactura6ActionPerformed
+    }//GEN-LAST:event_txtTotalActionPerformed
 
     /**
      * @param args the command line arguments
@@ -457,10 +521,10 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAnular;
-    private javax.swing.JButton btnNuevaFactura;
-    private javax.swing.JButton btnNuevaFactura1;
-    private javax.swing.JComboBox<String> cmbProvincia;
+    private javax.swing.JButton btnAgregarArticulo;
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnGuardar;
+    private javax.swing.JComboBox<String> cmbCliente;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -476,12 +540,12 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
     private javax.swing.JLabel lblMensajes;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JScrollPane tableFacturacion;
+    private javax.swing.JTextField txtEstado;
+    private javax.swing.JTextField txtFecha;
+    private javax.swing.JTextField txtIVA;
     private javax.swing.JTextField txtNumFactura;
-    private javax.swing.JTextField txtNumFactura1;
-    private javax.swing.JTextField txtNumFactura2;
-    private javax.swing.JTextField txtNumFactura3;
-    private javax.swing.JTextField txtNumFactura4;
     private javax.swing.JTextField txtNumFactura5;
-    private javax.swing.JTextField txtNumFactura6;
+    private javax.swing.JTextField txtSubtotal;
+    private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 }

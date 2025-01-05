@@ -136,7 +136,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnServicioMantenimientoActionPerformed
 
     private void btnFacturacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturacionActionPerformed
-        System.out.println("Facturación");
+        FacturacionForm facturacion = new FacturacionForm();
+        facturacion.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnFacturacionActionPerformed
 
     /**

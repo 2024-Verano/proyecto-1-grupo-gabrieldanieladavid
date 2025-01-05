@@ -4,6 +4,8 @@
  */
 package com.mycompany.tiendadeciclismo.productos;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author david
@@ -17,7 +19,29 @@ public class AgregarArticulo extends javax.swing.JFrame {
     public AgregarArticulo(Articulo articulo) {
         initComponents();
         gestor = new gestorTProductosArticulos();
+        cargarTiposProductos();
         
+        if (!comboTipo.getSelectedItem().equals("Bicicleta")) {
+            comboTamano.setEnabled(false);
+        }
+        
+        
+    }
+    
+    private void cargarTiposProductos() {
+        ArrayList<TProducto> tiposProductos = gestor.getListaTProducto();
+        comboboxCodigoTProducto.removeAllItems();
+
+        if (tiposProductos.isEmpty()) {
+            labelMensaje.setText("No hay tipos de productos registrados");
+            btnGuardar.setEnabled(false);
+            return;
+        }
+
+        for (TProducto tipo : tiposProductos) {
+            comboboxCodigoTProducto.addItem(tipo.getCodigo() + " - " + tipo.getNombre());
+        }
+        btnGuardar.setEnabled(true);
     }
 
     /**
@@ -36,7 +60,6 @@ public class AgregarArticulo extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        textCodigoTProducto = new javax.swing.JTextField();
         textNombre = new javax.swing.JTextField();
         comboTipo = new javax.swing.JComboBox<>();
         comboTamano = new javax.swing.JComboBox<>();
@@ -47,6 +70,7 @@ public class AgregarArticulo extends javax.swing.JFrame {
         btnGuardar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
         labelMensaje = new javax.swing.JLabel();
+        comboboxCodigoTProducto = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,6 +121,13 @@ public class AgregarArticulo extends javax.swing.JFrame {
             }
         });
 
+        comboboxCodigoTProducto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboboxCodigoTProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboboxCodigoTProductoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -126,7 +157,6 @@ public class AgregarArticulo extends javax.swing.JFrame {
                                 .addGap(17, 17, 17)))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(textCodigoTProducto)
                             .addComponent(textNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                             .addComponent(comboTipo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(comboTamano, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -134,7 +164,8 @@ public class AgregarArticulo extends javax.swing.JFrame {
                             .addComponent(textPrecio, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                             .addComponent(textCantidad, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                             .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(labelMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(labelMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(comboboxCodigoTProducto, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(69, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -147,10 +178,10 @@ public class AgregarArticulo extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(textNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(textCodigoTProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(comboboxCodigoTProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(comboTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -199,68 +230,75 @@ public class AgregarArticulo extends javax.swing.JFrame {
         int intprecio = 0;
         int intcantidad = 0;
         float inttamano;
+
         String nombre = textNombre.getText().trim();
-        String codigoTP = textCodigoTProducto.getText().trim();
         String tipo = (String) comboTipo.getSelectedItem();
         String tamano = (String) comboTamano.getSelectedItem();
         String marca = textMarca.getText().trim();
         String precio = textPrecio.getText().trim();
         String cantidad = textCantidad.getText().trim();
-        
-        //Verificar que no esten vacios.
-        if (nombre.isEmpty() || codigoTP.isEmpty() || tipo.isEmpty() || tamano.isEmpty() || 
-            marca.isEmpty() || precio.isEmpty() || cantidad.isEmpty()) {
+
+        String selectedItem = (String) comboboxCodigoTProducto.getSelectedItem();
+        if (selectedItem == null) {
+            labelMensaje.setText("Debe seleccionar un tipo de producto");
+            return;
+        }
+
+        String codigoTP = selectedItem.split(" - ")[0];
+
+        if (nombre.isEmpty() || tipo.isEmpty() || tamano.isEmpty()
+                || marca.isEmpty() || precio.isEmpty() || cantidad.isEmpty()) {
             labelMensaje.setText("Todos los campos deben estar completos.");
             return;
         }
-        
-        
+
         try {
             codigo = Integer.parseInt(codigoTP);
-            if (!gestor.verificarTProducto(codigo)){
-                labelMensaje.setText("El codigo no se encuentra en los tipos de productos");
+            if (!gestor.verificarTProducto(codigo)) {
+                labelMensaje.setText("El código no se encuentra en los tipos de productos");
                 return;
             }
-            
         } catch (Exception e) {
-            labelMensaje.setText("El codigo del tipo de producto debe ser un numero");
+            labelMensaje.setText("Error al obtener el código del tipo de producto");
             return;
         }
-        
+
         try {
             intprecio = Integer.parseInt(precio);
-            
         } catch (Exception e) {
-            labelMensaje.setText("El precio debe ser un numero");
+            labelMensaje.setText("El precio debe ser un número");
             return;
         }
+
         try {
             intcantidad = Integer.parseInt(cantidad);
-            
         } catch (Exception e) {
-            labelMensaje.setText("El precio debe ser un numero");
+            labelMensaje.setText("La cantidad debe ser un número");
             return;
         }
-        
-    if (!tipo.equals("Bicicleta")){
-         tamano = "0";      
-    }    
-    try {
-        inttamano = Float.parseFloat(tamano);
-    } catch (Exception e){
-        labelMensaje.setText("Error"); 
-        return;
-    }
-        
-    Articulo nuevo = new Articulo(gestor.getListaArticulos(), codigo, nombre, tipo, inttamano, marca, intprecio, intcantidad);
-    labelMensaje.setText("Agregado Existosamente");
-    textNombre.setText("");
-    textCodigoTProducto.setText("");
-    textMarca.setText("");
-    textPrecio.setText("");
-    textCantidad.setText("");
-    gestor.getListaArticulos().add(nuevo);
-    gestor.guardarArticulos();
+
+        if (!tipo.equals("Bicicleta")) {
+            tamano = "0";
+        }
+
+        try {
+            inttamano = Float.parseFloat(tamano);
+        } catch (Exception e) {
+            labelMensaje.setText("Error en el tamaño");
+            return;
+        }
+
+        Articulo nuevo = new Articulo(gestor.getListaArticulos(), codigo, nombre, tipo, inttamano, marca, intprecio, intcantidad);
+        labelMensaje.setText("Agregado Exitosamente");
+
+        textNombre.setText("");
+        textMarca.setText("");
+        textPrecio.setText("");
+        textCantidad.setText("");
+        comboboxCodigoTProducto.setSelectedIndex(0);
+
+        gestor.getListaArticulos().add(nuevo);
+        gestor.guardarArticulos();
         
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -275,6 +313,10 @@ public class AgregarArticulo extends javax.swing.JFrame {
             comboTamano.setEnabled(true);
         }
     }//GEN-LAST:event_comboTipoActionPerformed
+
+    private void comboboxCodigoTProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboboxCodigoTProductoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboboxCodigoTProductoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -317,6 +359,7 @@ public class AgregarArticulo extends javax.swing.JFrame {
     private javax.swing.JButton btnVolver;
     private javax.swing.JComboBox<String> comboTamano;
     private javax.swing.JComboBox<String> comboTipo;
+    private javax.swing.JComboBox<String> comboboxCodigoTProducto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -326,7 +369,6 @@ public class AgregarArticulo extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel labelMensaje;
     private javax.swing.JTextField textCantidad;
-    private javax.swing.JTextField textCodigoTProducto;
     private javax.swing.JTextField textMarca;
     private javax.swing.JTextField textNombre;
     private javax.swing.JTextField textPrecio;

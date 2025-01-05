@@ -266,7 +266,9 @@ public class FacturacionForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNuevaFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaFacturaActionPerformed
-
+        AgregarFacturaForm agregarFactura = new AgregarFacturaForm();
+        agregarFactura.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnNuevaFacturaActionPerformed
 
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed

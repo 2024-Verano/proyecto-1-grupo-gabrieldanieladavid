@@ -4,6 +4,8 @@
  */
 package com.mycompany.tiendadeciclismo.productos;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author david
@@ -19,6 +21,7 @@ public class ModificarArticulo extends javax.swing.JFrame {
         initComponents();
         this.articulo = articulo;
         gestor = new gestorTProductosArticulos();
+        cargarTiposProductos(); 
         labelNombre.setText("Nombre: " + articulo.getNombre());
         labelCodigo.setText("Codigo tipo de producto: " + articulo.getCodigoTipoProducto());
         labelTipo.setText("Tipo:  "+ articulo.getTipo());
@@ -27,6 +30,32 @@ public class ModificarArticulo extends javax.swing.JFrame {
         labelPrecio.setText("Precio: "+ articulo.getPrecio());
         labelCantidad.setText("Cantidad: " + articulo.getCantidad());
         
+    }
+    
+    private void cargarTiposProductos() {
+        ArrayList<TProducto> tiposProductos = gestor.getListaTProducto();
+        comboboxCodigoTProducto.removeAllItems();
+
+        if (tiposProductos.isEmpty()) {
+            labelMensaje.setText("No hay tipos de productos registrados");
+            btnGuardar.setEnabled(false);
+            return;
+        }
+
+        for (TProducto tipo : tiposProductos) {
+            comboboxCodigoTProducto.addItem(tipo.getCodigo() + " - " + tipo.getNombre());
+        }
+
+        for (int i = 0; i < comboboxCodigoTProducto.getItemCount(); i++) {
+            String item = comboboxCodigoTProducto.getItemAt(i);
+            int codigo = Integer.parseInt(item.split(" - ")[0]);
+            if (codigo == articulo.getCodigoTipoProducto()) {
+                comboboxCodigoTProducto.setSelectedIndex(i);
+                break;
+            }
+        }
+
+        btnGuardar.setEnabled(true);
     }
 
     /**
@@ -44,7 +73,6 @@ public class ModificarArticulo extends javax.swing.JFrame {
         textNombre = new javax.swing.JTextField();
         labelCodigo = new javax.swing.JLabel();
         labelNombre2 = new javax.swing.JLabel();
-        textCodigoTProducto = new javax.swing.JTextField();
         labelTipo = new javax.swing.JLabel();
         labelNombre3 = new javax.swing.JLabel();
         comboTipo = new javax.swing.JComboBox<>();
@@ -63,6 +91,7 @@ public class ModificarArticulo extends javax.swing.JFrame {
         btnVolver = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         labelMensaje = new javax.swing.JLabel();
+        comboboxCodigoTProducto = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -121,6 +150,8 @@ public class ModificarArticulo extends javax.swing.JFrame {
             }
         });
 
+        comboboxCodigoTProducto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -157,7 +188,7 @@ public class ModificarArticulo extends javax.swing.JFrame {
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(labelNombre2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(textCodigoTProducto))
+                                                .addComponent(comboboxCodigoTProducto, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                             .addGroup(layout.createSequentialGroup()
                                                 .addComponent(labelNombre3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -200,7 +231,7 @@ public class ModificarArticulo extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelNombre2)
-                    .addComponent(textCodigoTProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboboxCodigoTProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labelTipo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -258,106 +289,114 @@ public class ModificarArticulo extends javax.swing.JFrame {
     }//GEN-LAST:event_comboTipoActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-    labelMensaje.setText("");
+        labelMensaje.setText("");
 
-    int codigo = 0;
-    int intprecio = 0;
-    int intcantidad = 0;
-    float inttamano = 0;
+        int codigo = 0;
+        int intprecio = 0;
+        int intcantidad = 0;
+        float inttamano = 0;
 
-    String nombre = textNombre.getText().trim();
-    String codigoTP = textCodigoTProducto.getText().trim();
-    String tipo = (String) comboTipo.getSelectedItem();
-    String tamano = (String) comboTamano.getSelectedItem();
-    String marca = textMarca.getText().trim();
-    String precio = textPrecio.getText().trim();
-    String cantidad = textCantidad.getText().trim();
+        String nombre = textNombre.getText().trim();
+        String tipo = (String) comboTipo.getSelectedItem();
+        String tamano = (String) comboTamano.getSelectedItem();
+        String marca = textMarca.getText().trim();
+        String precio = textPrecio.getText().trim();
+        String cantidad = textCantidad.getText().trim();
 
-    // Buscar el artículo por código
-    Articulo articuloLista = null;
-    for (Articulo articuloEnLista : gestor.getListaArticulos()) {
-        if (articuloEnLista.getCodigo() == articulo.getCodigo()) {
-            articuloLista = articuloEnLista;
-            break;
+        // Obtener el código del tipo de producto seleccionado
+        String selectedItem = (String) comboboxCodigoTProducto.getSelectedItem();
+        if (selectedItem == null) {
+            labelMensaje.setText("Debe seleccionar un tipo de producto");
+            return;
         }
-    }
 
-    if (articuloLista == null) {
-        labelMensaje.setText("Artículo no encontrado");
-        return;
-    }
-
-    // Verificar y modificar campos que no están vacíos
-    if (!nombre.isEmpty()) {
-        articuloLista.setNombre(nombre);
-    }
-
-    if (!codigoTP.isEmpty()) {
+        // Extraer el código del item seleccionado
+        String codigoTP = selectedItem.split(" - ")[0];
         try {
             codigo = Integer.parseInt(codigoTP);
-            if (!gestor.verificarTProducto(codigo)) {
-                labelMensaje.setText("El código no se encuentra en los tipos de productos");
+        } catch (NumberFormatException e) {
+            labelMensaje.setText("Error al obtener el código del tipo de producto");
+            return;
+        }
+
+        // Buscar el artículo por código
+        Articulo articuloLista = null;
+        for (Articulo articuloEnLista : gestor.getListaArticulos()) {
+            if (articuloEnLista.getCodigo() == articulo.getCodigo()) {
+                articuloLista = articuloEnLista;
+                break;
+            }
+        }
+
+        if (articuloLista == null) {
+            labelMensaje.setText("Artículo no encontrado");
+            return;
+        }
+
+        // Verificar y modificar campos que no están vacíos
+        if (!nombre.isEmpty()) {
+            articuloLista.setNombre(nombre);
+        }
+
+        // Actualizar el código del tipo de producto
+        articuloLista.setCodigoTipoProducto(codigo);
+
+        if (!marca.isEmpty()) {
+            articuloLista.setMarca(marca);
+        }
+
+        if (!precio.isEmpty()) {
+            try {
+                intprecio = Integer.parseInt(precio);
+                articuloLista.setPrecio(intprecio);
+            } catch (NumberFormatException e) {
+                labelMensaje.setText("El precio debe ser un número");
                 return;
             }
-            articuloLista.setCodigoTipoProducto(codigo);
-        } catch (NumberFormatException e) {
-            labelMensaje.setText("El código del tipo de producto debe ser un número");
-            return;
         }
-    }
 
-    if (!marca.isEmpty()) {
-        articuloLista.setMarca(marca);
-    }
+        if (!cantidad.isEmpty()) {
+            try {
+                intcantidad = Integer.parseInt(cantidad);
+                articuloLista.setCantidad(intcantidad);
+            } catch (NumberFormatException e) {
+                labelMensaje.setText("La cantidad debe ser un número");
+                return;
+            }
+        }
 
-    if (!precio.isEmpty()) {
-        try {
-            intprecio = Integer.parseInt(precio);
-            articuloLista.setPrecio(intprecio);
-        } catch (NumberFormatException e) {
-            labelMensaje.setText("El precio debe ser un número");
-            return;
+        articuloLista.setTipo(tipo);
+        if (tipo.equals("Bicicleta")) {
+            try {
+                inttamano = Float.parseFloat(tamano);
+                articuloLista.setTamano(inttamano);
+            } catch (NumberFormatException e) {
+                labelMensaje.setText("El tamaño debe ser un número válido");
+                return;
+            }
+        } else {
+            articuloLista.setTamano(0);
         }
-    }
 
-    if (!cantidad.isEmpty()) {
-        try {
-            intcantidad = Integer.parseInt(cantidad);
-            articuloLista.setCantidad(intcantidad);
-        } catch (NumberFormatException e) {
-            labelMensaje.setText("La cantidad debe ser un número");
-            return;
-        }
-    }
-    articuloLista.setTipo(tipo);
-    if (tipo.equals("Bicicleta")) {
-        try {
-            inttamano = Float.parseFloat(tamano);
-            articuloLista.setTamano(inttamano);
-        } catch (NumberFormatException e) {
-            labelMensaje.setText("El tamaño debe ser un número válido");
-            return;
-        }
-    } else {
-        articuloLista.setTamano(0); // Si no es bicicleta, el tamaño es 0
-    }
-    
-    // Mensaje de éxito y limpiar campos
-    labelMensaje.setText("Artículo actualizado correctamente");
-    textNombre.setText("");
-    textCodigoTProducto.setText("");
-    textMarca.setText("");
-    textPrecio.setText("");
-    textCantidad.setText("");
-    articulo = articuloLista;
-    labelNombre.setText("Nombre: " + articulo.getNombre());
+        // Actualizar la interfaz
+        labelMensaje.setText("Artículo actualizado correctamente");
+        textNombre.setText("");
+        textMarca.setText("");
+        textPrecio.setText("");
+        textCantidad.setText("");
+        articulo = articuloLista;
+
+        // Actualizar las etiquetas con la nueva información
+        labelNombre.setText("Nombre: " + articulo.getNombre());
         labelCodigo.setText("Codigo tipo de producto: " + articulo.getCodigoTipoProducto());
-        labelTipo.setText("Tipo:  "+ articulo.getTipo());
+        labelTipo.setText("Tipo: " + articulo.getTipo());
         labelTamano.setText("Tamaño: " + articulo.getTamano());
-        labelMarca.setText("Marca: "+ articulo.getMarca());
-        labelPrecio.setText("Precio: "+ articulo.getPrecio());
+        labelMarca.setText("Marca: " + articulo.getMarca());
+        labelPrecio.setText("Precio: " + articulo.getPrecio());
         labelCantidad.setText("Cantidad: " + articulo.getCantidad());
-    gestor.guardarArticulos();
+
+        gestor.guardarArticulos();
+
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
@@ -408,6 +447,7 @@ public class ModificarArticulo extends javax.swing.JFrame {
     private javax.swing.JButton btnVolver;
     private javax.swing.JComboBox<String> comboTamano;
     private javax.swing.JComboBox<String> comboTipo;
+    private javax.swing.JComboBox<String> comboboxCodigoTProducto;
     private javax.swing.JLabel labelCantidad;
     private javax.swing.JLabel labelCodigo;
     private javax.swing.JLabel labelMarca;
@@ -424,7 +464,6 @@ public class ModificarArticulo extends javax.swing.JFrame {
     private javax.swing.JLabel labelTamano;
     private javax.swing.JLabel labelTipo;
     private javax.swing.JTextField textCantidad;
-    private javax.swing.JTextField textCodigoTProducto;
     private javax.swing.JTextField textMarca;
     private javax.swing.JTextField textNombre;
     private javax.swing.JTextField textPrecio;

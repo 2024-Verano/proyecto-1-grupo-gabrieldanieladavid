@@ -1,1 +1,2 @@
 0,Bicicleta
+1,Comida
