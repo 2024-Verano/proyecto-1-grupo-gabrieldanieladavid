@@ -1,1 +1,1 @@
-1,1,Cliente no encontrado,Motorola,Gris,1200,2002-12-12,2003-12-12,Nada,Abierto
+1,2,Marvin Mora Zepeda,Motorola,Gris,1200,2002-12-12,2003-12-12,Nada,Cerrado

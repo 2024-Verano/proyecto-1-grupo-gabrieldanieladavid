@@ -1,2 +1,0 @@
-1,2,Marvin Mora Zepeda,Bicicross,Rapida,10000,2025-01-01,2025-05-01,Observaciones del mantenimiento,cerrado
-2,2,Marvin Mora Zepeda,Bicicross,Rapida,10000,2025-01-01,2025-05-01,Observaciones del mantenimiento,cerrado

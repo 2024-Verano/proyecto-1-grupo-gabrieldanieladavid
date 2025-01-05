@@ -9,6 +9,7 @@ import com.mycompany.tiendadeciclismo.MantenimientoClienteForm;
 import com.mycompany.tiendadeciclismo.MenuPrincipal;
 import com.mycompany.tiendadeciclismo.ServicioMantenimiento;
 import com.mycompany.tiendadeciclismo.mantenimiento.GestorMantenimiento;
+import com.mycompany.tiendadeciclismo.mantenimiento.ParteGrafica.PantallaServicioMantenimiento;
 
 
      
@@ -46,7 +47,7 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
     public void Tabla(){
         String[] columnNames = {
             "Codigo Servicio","Codigo Cliente","Nombre Cliente","Bicicleta","Descripcion Bicicleta",
-            "Precio","Fecha Recibida","Fecha Entrega","oObservaciones","Estado"
+            "Precio","Fecha Recibida","Fecha Entrega","Observaciones","Estado"
         };
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -60,7 +61,8 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
     private void mostrarMensaje(String mensaje, boolean exito) {
         mensajes.setText(mensaje);
         mensajes.setForeground(exito ? new java.awt.Color(0, 153, 0) : new java.awt.Color(204, 0, 0));
-    }                
+    }
+
     private void cargarTabla() {
         DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
         model.setRowCount(0);
@@ -140,17 +142,17 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
 
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        Regresar = new java.awt.Button();
-        Agregar = new java.awt.Button();
-        Modificar = new java.awt.Button();
-        Eliminar = new java.awt.Button();
         jLabel1 = new javax.swing.JLabel();
         buscarCodigo = new javax.swing.JTextField();
         buscarNombreApellidos = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         mensajes = new javax.swing.JLabel();
-        Buscar = new java.awt.Button();
+        Agregar = new javax.swing.JButton();
+        Modificar = new javax.swing.JButton();
+        Eliminar = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        Regresar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -167,7 +169,7 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, true, true
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -175,34 +177,6 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
             }
         });
         jScrollPane2.setViewportView(jTable2);
-
-        Regresar.setLabel("Regresar");
-        Regresar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RegresarActionPerformed(evt);
-            }
-        });
-
-        Agregar.setLabel(" Agregar Servicio");
-        Agregar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AgregarActionPerformed(evt);
-            }
-        });
-
-        Modificar.setLabel("Modificar");
-        Modificar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ModificarActionPerformed(evt);
-            }
-        });
-
-        Eliminar.setLabel("Eliminar");
-        Eliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EliminarActionPerformed(evt);
-            }
-        });
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 0));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
@@ -212,6 +186,7 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
 
         buscarCodigo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         buscarCodigo.setText("Ingrese el código de servicio");
+        buscarCodigo.setPreferredSize(new java.awt.Dimension(237, 31));
         buscarCodigo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buscarCodigoActionPerformed(evt);
@@ -226,18 +201,57 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel2.setText("Buscar por nombre:");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel3.setText("Buscar por codigo:");
 
         mensajes.setText("jLabel4");
 
-        Buscar.setLabel("Buscar");
-        Buscar.addActionListener(new java.awt.event.ActionListener() {
+        Agregar.setBackground(new java.awt.Color(51, 153, 0));
+        Agregar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Agregar.setText("Agregar Servicio");
+        Agregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BuscarActionPerformed(evt);
+                AgregarActionPerformed(evt);
+            }
+        });
+
+        Modificar.setBackground(new java.awt.Color(0, 102, 204));
+        Modificar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Modificar.setText("Modificar");
+        Modificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ModificarActionPerformed(evt);
+            }
+        });
+
+        Eliminar.setBackground(new java.awt.Color(204, 0, 0));
+        Eliminar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Eliminar.setText("Eliminar");
+        Eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EliminarActionPerformed(evt);
+            }
+        });
+
+        jButton1.setBackground(new java.awt.Color(51, 102, 0));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jButton1.setText("Buscar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        Regresar.setBackground(new java.awt.Color(204, 204, 204));
+        Regresar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Regresar.setForeground(new java.awt.Color(0, 0, 0));
+        Regresar.setText("Regresar");
+        Regresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RegresarActionPerformed(evt);
             }
         });
 
@@ -246,86 +260,90 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(165, 165, 165)
-                .addComponent(mensajes)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(48, 48, 48))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addComponent(jLabel2)
+                .addGap(43, 43, 43)
+                .addComponent(Agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(buscarNombreApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buscarCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36))
+                .addComponent(Modificar, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(Regresar)
+                .addGap(42, 42, 42))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(272, 272, 272)
+                        .addGap(288, 288, 288)
                         .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 976, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addComponent(Agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Modificar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(47, 47, 47)
+                            .addComponent(jLabel2)
+                            .addGap(18, 18, 18)
+                            .addComponent(buscarNombreApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(40, 40, 40)
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(buscarCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(123, 123, 123)
+                                .addComponent(mensajes))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(14, 14, 14)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1009, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addComponent(jLabel1)
-                .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(buscarCodigo)
-                        .addComponent(jLabel3))
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(buscarNombreApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(Modificar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(Agregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(7, 7, 7)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(mensajes)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(Regresar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(13, 13, 13)))
+                        .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(buscarCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3)
+                                .addComponent(jButton1))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(buscarNombreApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(Agregar)
+                            .addComponent(Modificar)
+                            .addComponent(Eliminar))
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Regresar)
+                        .addGap(4, 4, 4)))
+                .addComponent(mensajes)
                 .addGap(6, 6, 6))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
-        MenuPrincipal menuPrincipal = new MenuPrincipal();
-        menuPrincipal.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_RegresarActionPerformed
+    private void buscarNombreApellidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarNombreApellidosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buscarNombreApellidosActionPerformed
+
+    private void buscarCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCodigoActionPerformed
+
+    }//GEN-LAST:event_buscarCodigoActionPerformed
 
     private void AgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AgregarActionPerformed
     PantallaServicioMantenimiento form = new PantallaServicioMantenimiento();
     form.setVisible(true);
     this.dispose();
+     
     }//GEN-LAST:event_AgregarActionPerformed
 
     private void ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModificarActionPerformed
@@ -351,11 +369,44 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ModificarActionPerformed
 
-    private void buscarNombreApellidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarNombreApellidosActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buscarNombreApellidosActionPerformed
+    private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
+        int selectedRow = jTable2.getSelectedRow();
+        if (selectedRow == -1) {
+            mostrarMensaje("Por favor, seleccione un servicio a eliminar", false);
+            return;
+        }
 
-    private void BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarActionPerformed
+        int codigo = Integer.parseInt(jTable2.getValueAt(selectedRow, 0).toString());
+        String nombre = jTable2.getValueAt(selectedRow, 2).toString();
+        String estado = jTable2.getValueAt(selectedRow, 9).toString();
+        if(estado.equals("Cerrado")){
+            mostrarMensaje("No se puede eliminar un servicio que ya ha sido cerrado",false);}
+        else{int confirmacion = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro que desea eliminar el servicio de " + nombre + "?",
+                "Confirmar eliminación",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirmacion == javax.swing.JOptionPane.YES_OPTION) {
+            try {
+                GestorMantenimiento gestor = GestorMantenimiento.getInstancia();
+                ServicioMantenimiento servicio =gestor.buscarPorCodigo(codigo);
+
+                if (servicio != null) {
+                    gestor.eliminarServicio(codigo);
+                    cargarTabla(); // Actualiza la tabla después de eliminar
+                    mostrarMensaje("Servicio eliminado exitosamente", true);
+                }
+            } catch (Exception e) {
+                mostrarMensaje("Error al eliminar el servicio: " + e.getMessage(), false);
+                }
+            }
+        }
+    }//GEN-LAST:event_EliminarActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String codigoServicio = buscarCodigo.getText().trim();
         String nombreApellidos = buscarNombreApellidos.getText().trim();
         if (codigoServicio.equals("Ingrese el código de servicio")||codigoServicio.isEmpty()) {
@@ -401,46 +452,13 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
          catch (Exception e) {
             mostrarMensaje("Error al buscar servicios: " + e.getMessage(), false);
         }
-        
-    }//GEN-LAST:event_BuscarActionPerformed
+    }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
-        int selectedRow = jTable2.getSelectedRow();
-        if (selectedRow == -1) {
-            mostrarMensaje("Por favor, seleccione un servicio a eliminar", false);
-            return;
-        }
-
-        int codigo = Integer.parseInt(jTable2.getValueAt(selectedRow, 0).toString());
-        String nombre = jTable2.getValueAt(selectedRow, 2).toString();
-
-        int confirmacion = javax.swing.JOptionPane.showConfirmDialog(
-                this,
-                "¿Está seguro que desea eliminar el servicio de " + nombre + "?",
-                "Confirmar eliminación",
-                javax.swing.JOptionPane.YES_NO_OPTION,
-                javax.swing.JOptionPane.WARNING_MESSAGE
-        );
-
-        if (confirmacion == javax.swing.JOptionPane.YES_OPTION) {
-            try {
-                GestorMantenimiento gestor = GestorMantenimiento.getInstancia();
-                ServicioMantenimiento servicio =gestor.buscarPorCodigo(codigo);
-
-                if (servicio != null) {
-                    gestor.eliminarServicio(codigo);
-                    cargarTabla(); // Actualiza la tabla después de eliminar
-                    mostrarMensaje("Servicio eliminado exitosamente", true);
-                }
-            } catch (Exception e) {
-                mostrarMensaje("Error al eliminar el servicio: " + e.getMessage(), false);
-            }
-        }
-    }//GEN-LAST:event_EliminarActionPerformed
-
-    private void buscarCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCodigoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buscarCodigoActionPerformed
+    private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
+        MenuPrincipal menuPrincipal = new MenuPrincipal();
+        menuPrincipal.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_RegresarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -478,13 +496,13 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private java.awt.Button Agregar;
-    private java.awt.Button Buscar;
-    private java.awt.Button Eliminar;
-    private java.awt.Button Modificar;
-    private java.awt.Button Regresar;
+    private javax.swing.JButton Agregar;
+    private javax.swing.JButton Eliminar;
+    private javax.swing.JButton Modificar;
+    private javax.swing.JButton Regresar;
     private javax.swing.JTextField buscarCodigo;
     private javax.swing.JTextField buscarNombreApellidos;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

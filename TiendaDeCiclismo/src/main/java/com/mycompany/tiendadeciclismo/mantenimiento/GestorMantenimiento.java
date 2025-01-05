@@ -46,38 +46,40 @@ public class GestorMantenimiento {
         return new ArrayList<>(servicios);
     }
 
-    public void cargarServicios() {
-        try (BufferedReader br = new BufferedReader(new FileReader(ArchivoServicioMantenimiento))) {
-            String linea;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            while ((linea = br.readLine()) != null) {
-                String[] datos = linea.split(",");
-                if (datos.length == 9) {
-                    try {
-                        ServicioMantenimiento servicio = new ServicioMantenimiento(
-                                Integer.parseInt(datos[0]),
-                                Integer.parseInt(datos[1]),
-                                datos[2],
-                                datos[3],
-                                Integer.parseInt(datos[4]),
-                                sdf.parse(datos[5]),
-                                sdf.parse(datos[6]),
-                                datos[7],
-                                datos[8]
-                        );
-                        servicios.add(servicio);
-                    } catch (ParseException e) {
-                        System.err.println("Error al parsear la fecha: " + e.getMessage());
-                    } catch (NumberFormatException e) {
-                        System.err.println("Error al convertir número: " + e.getMessage());
-                    }
+    
+ public void cargarServicios() {
+    try (BufferedReader br = new BufferedReader(new FileReader(ArchivoServicioMantenimiento))) {
+        String linea;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        while ((linea = br.readLine()) != null) {
+            String[] datos = linea.split(",");
+            if (datos.length == 10) {
+                try {
+                    // Asegurando que los índices sean correctos
+                    ServicioMantenimiento servicio = new ServicioMantenimiento(
+                            Integer.parseInt(datos[0]),  
+                            Integer.parseInt(datos[1]),  
+                            datos[3],                    
+                            datos[4],                    
+                            Integer.parseInt(datos[5]),  
+                            sdf.parse(datos[6]),         
+                            sdf.parse(datos[7]),         
+                            datos[8],                    
+                            datos[9]                     
+                    );
+                    servicios.add(servicio);
+                } catch (ParseException e) {
+                    System.err.println("Error al parsear la fecha: " + e.getMessage());
+                } catch (NumberFormatException e) {
+                    System.err.println("Error al convertir número: " + e.getMessage());
                 }
             }
-        } catch (IOException e) {
-            System.err.println("Error al leer el archivo: " + e.getMessage());
         }
+    } catch (IOException e) {
+        System.err.println("Error al leer el archivo: " + e.getMessage());
     }
-    
+}
+
     public int obtenerSiguienteCodigo() {
         if (servicios.isEmpty()) {
             return 1;
