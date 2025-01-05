@@ -54,7 +54,6 @@
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="textCodigoTProducto" max="32767" attributes="0"/>
                           <Component id="textNombre" pref="213" max="32767" attributes="0"/>
                           <Component id="comboTipo" alignment="0" max="32767" attributes="0"/>
                           <Component id="comboTamano" alignment="0" max="32767" attributes="0"/>
@@ -63,6 +62,7 @@
                           <Component id="textCantidad" alignment="0" pref="213" max="32767" attributes="0"/>
                           <Component id="btnGuardar" max="32767" attributes="0"/>
                           <Component id="labelMensaje" max="32767" attributes="0"/>
+                          <Component id="comboboxCodigoTProducto" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -81,11 +81,11 @@
                   <Component id="textNombre" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                  <Component id="textCodigoTProducto" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="comboboxCodigoTProducto" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="comboTipo" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -160,8 +160,6 @@
         <Property name="text" type="java.lang.String" value="Precio: "/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="textCodigoTProducto">
-    </Component>
     <Component class="javax.swing.JTextField" name="textNombre">
     </Component>
     <Component class="javax.swing.JComboBox" name="comboTipo">
@@ -233,6 +231,24 @@
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="labelMensaje">
+    </Component>
+    <Component class="javax.swing.JComboBox" name="comboboxCodigoTProducto">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="Item 1"/>
+            <StringItem index="1" value="Item 2"/>
+            <StringItem index="2" value="Item 3"/>
+            <StringItem index="3" value="Item 4"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comboboxCodigoTProductoActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>
