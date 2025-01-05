@@ -5,8 +5,11 @@
 package com.mycompany.tiendadeciclismo;
 
 import com.mycompany.tiendadeciclismo.productos.Articulo;
+import java.awt.Color;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -26,16 +29,18 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
         initComponents();
         gestorFacturas = GestorFacturas.getInstancia();
         gestorClientes = GestorClientes.getInstancia();
-        
+
         txtNumFactura.setText(String.valueOf(gestorFacturas.obtenerSiguienteNumero()));
-        
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         txtFecha.setText(sdf.format(new Date()));
-        
+
         cargarClientes();
-        
+
         setLocationRelativeTo(null);
         lblMensajes.setText("");
+
+        actualizarTotales();
     }
     
     private void cargarClientes() {
@@ -52,10 +57,21 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
 
         for (int i = 0; i < model.getRowCount(); i++) {
-            subtotal += Double.parseDouble(model.getValueAt(i, 4).toString());
+            String totalStr = model.getValueAt(i, 4).toString()
+                    .replace("₡", "") 
+                    .replace(",", "") 
+                    .replace(" ", "") 
+                    .trim();            
+
+            try {
+                double valor = Double.parseDouble(totalStr);
+                subtotal += valor;
+            } catch (NumberFormatException e) {
+                System.err.println("Error al parsear valor: " + totalStr);
+            }
         }
 
-        double iva = subtotal * 0.13;
+        double iva = Math.round(subtotal * 0.13 * 100.0) / 100.0;  // Redondear a 2 decimales
         double total = subtotal + iva;
 
         txtSubtotal.setText(String.format("₡%.2f", subtotal));
@@ -266,10 +282,7 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "Código", "Artículo", "Cantidad", "Precio Unit. ", "Total"
@@ -441,11 +454,91 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtEstadoActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        if (model.getRowCount() == 0) {
+            lblMensajes.setText("No se puede guardar una factura sin artículos");
+            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+            return;
+        }
 
+        String clienteSeleccionado = (String) cmbCliente.getSelectedItem();
+        if (clienteSeleccionado == null || clienteSeleccionado.isEmpty()) {
+            lblMensajes.setText("Debe seleccionar un cliente");
+            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+            return;
+        }
+
+        try {
+            int numeroFactura = Integer.parseInt(txtNumFactura.getText());
+            int codigoCliente = Integer.parseInt(clienteSeleccionado.split(" - ")[0]);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date fecha = sdf.parse(txtFecha.getText());
+
+            double subtotal = Double.parseDouble(txtSubtotal.getText().replace("₡", "").replace(",", "").trim());
+            double iva = Double.parseDouble(txtIVA.getText().replace("₡", "").replace(",", "").trim());
+            double total = Double.parseDouble(txtTotal.getText().replace("₡", "").replace(",", "").trim());
+
+            Factura factura = new Factura(numeroFactura, codigoCliente, fecha);
+            factura.setSubtotal(subtotal);
+            factura.setIva(iva);
+            factura.setTotal(total);
+
+            for (int i = 0; i < model.getRowCount(); i++) {
+                int codigoArticulo = Integer.parseInt(model.getValueAt(i, 0).toString());
+                int cantidad = Integer.parseInt(model.getValueAt(i, 2).toString());
+                double precioUnitario = Double.parseDouble(model.getValueAt(i, 3).toString()
+                        .replace("₡", "").replace(",", "").trim());
+
+                DetalleFactura detalle = new DetalleFactura(
+                        numeroFactura,
+                        codigoArticulo,
+                        cantidad,
+                        precioUnitario
+                );
+
+                factura.getDetalles().add(detalle);
+            }
+
+            gestorFacturas.agregarFactura(factura);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Factura guardada exitosamente",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+            FacturacionForm facturacionForm = new FacturacionForm();
+            facturacionForm.setVisible(true);
+            this.dispose();
+
+        } catch (ParseException e) {
+            lblMensajes.setText("Error en el formato de la fecha");
+            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+        } catch (NumberFormatException e) {
+            lblMensajes.setText("Error en el formato de los números");
+            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+        } catch (Exception e) {
+            lblMensajes.setText("Error al guardar la factura: " + e.getMessage());
+            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        int confirmacion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro que desea cancelar la factura?",
+                "Confirmar cancelación",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
 
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            FacturacionForm facturacionForm = new FacturacionForm();
+            facturacionForm.setVisible(true);
+            this.dispose();
+        }
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnAgregarArticuloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarArticuloActionPerformed
@@ -456,16 +549,22 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
             Articulo articulo = dialog.getArticuloElegido();
             int cantidad = dialog.getCantidadElegida();
 
+            double precioUnitario = articulo.getPrecio();
+            double total = cantidad * precioUnitario;
+
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.addRow(new Object[]{
                 articulo.getCodigo(),
                 articulo.getNombre(),
                 cantidad,
-                articulo.getPrecio(),
-                cantidad * articulo.getPrecio()
+                precioUnitario, 
+                total 
             });
 
             actualizarTotales();
+
+            lblMensajes.setText("Artículo agregado correctamente");
+            lblMensajes.setForeground(new java.awt.Color(0, 153, 0));
         }
     }//GEN-LAST:event_btnAgregarArticuloActionPerformed
 

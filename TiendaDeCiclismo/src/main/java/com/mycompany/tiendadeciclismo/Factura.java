@@ -24,7 +24,6 @@ public class Factura {
         this.detalles = new ArrayList<>();
     }
     
-    // Getters y setters
     public int getNumeroFactura() { return numeroFactura; }
     public int getCodigoCliente() { return codigoCliente; }
     public Date getFecha() { return fecha; }
@@ -35,6 +34,18 @@ public class Factura {
     public ArrayList<DetalleFactura> getDetalles() { return detalles; }
     
     public void setEstado(String estado) { this.estado = estado; }
+    
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public void setIva(double iva) {
+        this.iva = iva;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
     
     public void calcularTotales() {
         subtotal = 0;
@@ -50,4 +61,6 @@ public class Factura {
         return String.format("%d,%d,%tF,%s,%.2f,%.2f,%.2f", 
             numeroFactura, codigoCliente, fecha, estado, subtotal, iva, total);
     }
+    
+    
 }

@@ -4,6 +4,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class GestorFacturas {
     private static final String ARCHIVO_FACTURAS = "facturas.txt";
@@ -70,5 +71,26 @@ public class GestorFacturas {
         }
     }
     
-    // Continúa con métodos para guardar facturas, cargar detalles, etc.
+    public void agregarFactura(Factura factura) {
+        facturas.add(factura);
+
+        try {
+            // Guardar la factura
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_FACTURAS, true))) {
+                bw.write(factura.toString());
+                bw.newLine();
+            }
+
+            // Guardar los detalles
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_DETALLES, true))) {
+                for (DetalleFactura detalle : factura.getDetalles()) {
+                    bw.write(detalle.toString());
+                    bw.newLine();
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error al guardar la factura: " + e.getMessage());
+        }
+    }
+    
 }
