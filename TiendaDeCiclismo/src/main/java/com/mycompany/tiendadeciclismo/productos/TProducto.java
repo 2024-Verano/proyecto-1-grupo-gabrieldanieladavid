@@ -2,42 +2,69 @@
 package com.mycompany.tiendadeciclismo.productos;
 import java.util.ArrayList;
 /**
- *
- * Clase de el tipo de producto, para seguidamente ser agregado a los articulos de la tienda. 
+ * Clase que representa un tipo de producto para los artículos de la tienda.
+ * Proporciona funcionalidad para asignar un código único a cada tipo de producto
+ * y verificar la validez de su nombre.
  */
 public class TProducto {
-    private int codigo; //Codigo del producto,  se incrementa automáticamente de 1 en 1 
-    private String nombre; //Nombre del Producto, cadena de texto no vacía y sin espacios en blanco en sus extremos 
-    
-    public TProducto(ArrayList<TProducto> ListaTipoProductos, String Pnombre){ //Recibe la lista de los productos creados, para asi asignar el codigo
-        int contador = 0; //Crea un contador para asignar el codigo del tipo de producto
-       
-        //Ciclo para agregar el codigo a el tipo de producto
-        for (TProducto x : ListaTipoProductos ){
+
+    /////////////////// Atributos //////////////////////
+
+    /**
+     * Código único del tipo de producto, se incrementa automáticamente de 1 en 1.
+     */
+    private int codigo;
+
+    /**
+     * Nombre del tipo de producto. Debe ser una cadena de texto no vacía
+     * y sin espacios en blanco en los extremos.
+     */
+    private String nombre;
+
+    /////////////////// Métodos ////////////////////////
+
+    /**
+     * Constructor que inicializa un objeto TProducto basado en una lista existente de tipos de productos.
+     * Asigna automáticamente el código en función de la cantidad de productos en la lista.
+     *
+     * @param listaTipoProductos Lista de los tipos de productos ya creados.
+     * @param Pnombre Nombre del tipo de producto.
+     */
+    public TProducto(ArrayList<TProducto> listaTipoProductos, String Pnombre) {
+        int contador = 0;
+
+        // Ciclo para contar los productos existentes y asignar el código.
+        for (TProducto x : listaTipoProductos) {
             contador = contador + 1;
         }
-        codigo = contador; 
-        
-        nombre = Pnombre;
+        this.codigo = contador;
+        this.nombre = Pnombre;
     }
-    public TProducto(String codigo, String nombre){
-        
+
+    /**
+     * Constructor que inicializa un objeto TProducto con parámetros específicos.
+     *
+     * @param codigo Código único del tipo de producto (como cadena de texto).
+     * @param nombre Nombre del tipo de producto.
+     */
+    public TProducto(String codigo, String nombre) {
         this.codigo = Integer.parseInt(codigo);
         this.nombre = nombre;
-        
-        
     }
-    //Funcion para verificar que el nombre no contenga espacios. 
+
+    /**
+     * Método estático para verificar que el nombre del producto no contenga
+     * espacios en blanco en sus extremos.
+     *
+     * @param nombre Nombre del tipo de producto a verificar.
+     * @return true si el nombre no tiene espacios en los extremos; false en caso contrario.
+     */
     public static boolean verificarNombre(String nombre) {
-        // Se usa trim para quitar los espacios en los extremos
-        String copiaString = nombre;
-        copiaString = copiaString.trim();
-        //Ahora se comparan los strings para verificar que ambos no tengan espacios en los extremos.
-        if (nombre.equals(copiaString)) {
-           return true;
-        } else {
-           return false; 
-        }
+        // Se usa trim para eliminar los espacios en blanco en los extremos.
+        String copiaString = nombre.trim();
+
+        // Se compara la cadena original con su versión sin espacios en los extremos.
+        return nombre.equals(copiaString);
     }
      // Getters y Setters
     public int getCodigo() {

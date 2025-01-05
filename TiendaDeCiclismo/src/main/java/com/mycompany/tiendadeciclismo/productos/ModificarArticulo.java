@@ -313,6 +313,10 @@ public class ModificarArticulo extends javax.swing.JFrame {
     if (!precio.isEmpty()) {
         try {
             intprecio = Integer.parseInt(precio);
+            if (intprecio < 0){
+                labelMensaje.setText("El precio debe ser positivo");
+                return;
+            }
             articuloLista.setPrecio(intprecio);
         } catch (NumberFormatException e) {
             labelMensaje.setText("El precio debe ser un número");
@@ -323,6 +327,10 @@ public class ModificarArticulo extends javax.swing.JFrame {
     if (!cantidad.isEmpty()) {
         try {
             intcantidad = Integer.parseInt(cantidad);
+            if (intcantidad < 0){
+                labelMensaje.setText("La cantidad debe ser positiva");
+                return;
+            }
             articuloLista.setCantidad(intcantidad);
         } catch (NumberFormatException e) {
             labelMensaje.setText("La cantidad debe ser un número");

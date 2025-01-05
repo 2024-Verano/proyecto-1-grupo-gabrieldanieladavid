@@ -8,50 +8,107 @@ import java.util.ArrayList;
  *
  * @author david
  */
+/**
+ * La clase Articulo representa un artículo con diversas propiedades como código,
+ * tipo, nombre, tamaño, marca, precio y cantidad. Permite inicializar y gestionar
+ * los datos de un artículo.
+ */
 public class Articulo {
-    ///////////////// Atributos //////////////////////
+
+    /////////////////// Atributos //////////////////////
+
+    /**
+     * Código único del artículo.
+     */
     private int codigo;
+
+    /**
+     * Código del tipo de producto al que pertenece el artículo.
+     */
     private int codigoTipoProducto;
+
+    /**
+     * Nombre del artículo.
+     */
     private String nombre;
+
+    /**
+     * Tipo o categoría del artículo.
+     */
     private String tipo;
+
+    /**
+     * Tamaño del artículo.
+     */
     private float tamano;
+
+    /**
+     * Marca del artículo.
+     */
     private String marca;
+
+    /**
+     * Precio del artículo.
+     */
     private int precio;
+
+    /**
+     * Cantidad disponible del artículo.
+     */
     private int cantidad;
-    
- //////////////////// Metodos ////////////////////////
-    public Articulo(ArrayList<Articulo> ListaArticulos, int TPcodigo, String nombre, String tipo, float tamano, String marca, int precio, int cantidad){
-        int contador = 0; 
-        for (Articulo x : ListaArticulos ){
+
+    /////////////////// Métodos ////////////////////////
+
+    /**
+     * Constructor que inicializa un objeto Articulo basado en una lista de artículos.
+     * Genera automáticamente el código del artículo en función de la cantidad
+     * de artículos en la lista proporcionada.
+     *
+     * @param listaArticulos Lista de artículos existentes.
+     * @param TPcodigo Código del tipo de producto.
+     * @param nombre Nombre del artículo.
+     * @param tipo Tipo o categoría del artículo.
+     * @param tamano Tamaño del artículo.
+     * @param marca Marca del artículo.
+     * @param precio Precio del artículo.
+     * @param cantidad Cantidad disponible del artículo.
+     */
+    public Articulo(ArrayList<Articulo> listaArticulos, int TPcodigo, String nombre, String tipo, float tamano, String marca, int precio, int cantidad) {
+        int contador = 0;
+        for (Articulo x : listaArticulos) {
             contador = contador + 1;
         }
         this.codigo = contador;
-        codigoTipoProducto = TPcodigo;
-        
+        this.codigoTipoProducto = TPcodigo;
         this.nombre = nombre;
         this.tipo = tipo;
         this.tamano = tamano;
         this.marca = marca;
         this.precio = precio;
         this.cantidad = cantidad;
-        
-        
-     
     }
-     public Articulo(int codigo, int TPcodigo, String nombre, String tipo, float tamano, String marca, int precio, int cantidad){
-        
+
+    /**
+     * Constructor que inicializa un objeto Articulo con todos los parámetros específicos.
+     *
+     * @param codigo Código único del artículo.
+     * @param TPcodigo Código del tipo de producto.
+     * @param nombre Nombre del artículo.
+     * @param tipo Tipo o categoría del artículo.
+     * @param tamano Tamaño del artículo.
+     * @param marca Marca del artículo.
+     * @param precio Precio del artículo.
+     * @param cantidad Cantidad disponible del artículo.
+     */
+    public Articulo(int codigo, int TPcodigo, String nombre, String tipo, float tamano, String marca, int precio, int cantidad) {
         this.codigo = codigo;
-        codigoTipoProducto = TPcodigo;
-        
+        this.codigoTipoProducto = TPcodigo;
         this.nombre = nombre;
         this.tipo = tipo;
         this.tamano = tamano;
         this.marca = marca;
         this.precio = precio;
         this.cantidad = cantidad;
-        
-        
-     
     }
     
     

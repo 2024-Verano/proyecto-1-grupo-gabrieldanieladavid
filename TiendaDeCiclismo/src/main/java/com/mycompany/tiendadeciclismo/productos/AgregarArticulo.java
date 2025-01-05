@@ -229,14 +229,20 @@ public class AgregarArticulo extends javax.swing.JFrame {
         
         try {
             intprecio = Integer.parseInt(precio);
-            
+            if (intprecio < 0){
+                labelMensaje.setText("El precio debe ser positivo");
+                return;
+            }
         } catch (Exception e) {
             labelMensaje.setText("El precio debe ser un numero");
             return;
         }
         try {
             intcantidad = Integer.parseInt(cantidad);
-            
+            if (intcantidad < 0){
+                labelMensaje.setText("La cantidad debe ser positiva");
+                return;
+            }
         } catch (Exception e) {
             labelMensaje.setText("El precio debe ser un numero");
             return;
