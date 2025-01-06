@@ -2,7 +2,10 @@ package com.mycompany.tiendadeciclismo;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * 
+ * @author dnlal
+ */
 public class DivisionTerritorial {
     private static DivisionTerritorial instancia;
     private List<Division> provincias;

@@ -1,2 +1,2 @@
 1,2,Marvin Mora Zepeda,Motorola,Gris,1200,2002-12-12,2003-12-12,Nada,Cerrado
-2,3,Gabriel Garro Cruz,motorola,negra,1300,2024-12-12,2025-12-12,Nada,Abierto
+2,3,Gabriel Garro Cruz,motorola,negra,1300,2024-12-12,2025-12-12,Nada,Cerrado

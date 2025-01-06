@@ -5,7 +5,7 @@
 package com.mycompany.tiendadeciclismo;
 
 /**
- *
+ *El login de el programa, verifica el acceso de los usuarios a el programa.
  * @author dnlal
  */
 public class LoginForm extends javax.swing.JFrame {
@@ -15,7 +15,9 @@ public class LoginForm extends javax.swing.JFrame {
      */
     private GestorUsuarios gestorUsuarios;
     
-    
+    /**
+     * Constructor de la clase
+     */
     public LoginForm() {
         initComponents();
         gestorUsuarios = new GestorUsuarios();
@@ -23,7 +25,9 @@ public class LoginForm extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         configurarComponentes();
     }
-    
+    /**
+     * Configura los componentes del Login
+     */
     private void configurarComponentes() {
         txtUsuario.setText("");
         txtPassword.setText("");
@@ -159,7 +163,12 @@ public class LoginForm extends javax.swing.JFrame {
     private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUsuarioActionPerformed
-
+    /**
+     * Botón para validar los datos del login e ingresar al programa.
+     * Verifica si el usuario escorrecto o incorrecto.
+     * Si es correcto pasa a el menú principal.
+     * @param evt 
+     */
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         String usuario = txtUsuario.getText().trim();
         String contraseña = txtPassword.getText().trim();

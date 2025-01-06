@@ -8,13 +8,14 @@ import com.mycompany.tiendadeciclismo.mantenimiento.ParteGrafica.ServicioManteni
 import com.mycompany.tiendadeciclismo.productos.CRUDArticulos;
 
 /**
- *
+ *Menu principal del programa, sirve para moverse entre las funcionalidades de este, como 
+ * el registro de articulos, servicios o clientes y la seccion de facturacion.
  * @author dnlal
  */
 public class MenuPrincipal extends javax.swing.JFrame {
 
     /**
-     * Creates new form MenuPrincipal
+     * Constructor de la clase
      */
     public MenuPrincipal() {
         initComponents();
@@ -117,24 +118,40 @@ public class MenuPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Boton para abrir la pantalla de registro de clientes.
+     * @param evt 
+     */
     private void btnRegistroClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroClienteActionPerformed
         RegistroClientesForm registroClientes = new RegistroClientesForm();
         registroClientes.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRegistroClienteActionPerformed
 
+    /**
+     * Boton para abrir la pantalla de registro de productos y articulos.
+     * @param evt 
+     */
     private void btnRegistroProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroProductosActionPerformed
         CRUDArticulos gestionArticulos = new CRUDArticulos();
         gestionArticulos.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRegistroProductosActionPerformed
 
+    /**
+     * Boton para abrir el registro de Servicios de Mantenimiento.
+     * @param evt 
+     */
     private void btnServicioMantenimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnServicioMantenimientoActionPerformed
         ServicioMantenimientoForm registroMantenimiento = new ServicioMantenimientoForm();
         registroMantenimiento.setVisible(true);
         this.dispose(); 
     }//GEN-LAST:event_btnServicioMantenimientoActionPerformed
 
+    /**
+     * Boton para abrir el servicio de facturación.
+     * @param evt 
+     */
     private void btnFacturacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturacionActionPerformed
         FacturacionForm facturacion = new FacturacionForm();
         facturacion.setVisible(true);

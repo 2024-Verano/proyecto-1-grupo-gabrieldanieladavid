@@ -5,23 +5,27 @@
 package com.mycompany.tiendadeciclismo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 
 /**
- *
+ *Pantalla para agregar un cliente nuevo o modificar un cliente seleccionado.
  * @author dnlal
  */
 public class MantenimientoClienteForm extends javax.swing.JFrame {
+    /**
+     * Atributos
+     * Division territorial del cliente.
+     */
     private DivisionTerritorial divisionTerritorial;
+    /**
+     * modo edicion que se activa si se eligue modificar un servicio ya creado.
+     */
     private boolean modoEdicion = false;
+    /**
+     * Cliente a editar si se eligue el modificar.
+     */
     private Cliente clienteEditar = null;
 
     /**
@@ -30,11 +34,17 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
     public MantenimientoClienteForm() {
         this(null);
     }
-
+    
+    /**
+     * Metodo constructor de la clase.
+     * @param cliente cliente que se quiere agregar o modificar.
+     */
     public MantenimientoClienteForm(Cliente cliente) {
         initComponents();
 
-        // Forzar que los campos sean editables y habilitados inmediatamente después de initComponents
+        /**
+         * Forzar que los campos sean editables y habilitados inmediatamente después de initComponents
+         */
         txtNombre.setEditable(true);
         txtNombre.setEnabled(true);
         txtApellidos.setEditable(true);
@@ -46,7 +56,7 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         txtFechaNacimiento.setEditable(true);
         txtFechaNacimiento.setEnabled(true);
 
-        // Eliminar los ActionListeners existentes
+        /** Eliminar los ActionListeners existentes */
         for (ActionListener al : txtNombre.getActionListeners()) {
             txtNombre.removeActionListener(al);
         }
@@ -81,6 +91,9 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Cargar datos de el cliente que se va a modificar.
+     */
     private void cargarDatosCliente() {
         if (clienteEditar != null) {
             setTitle("Modificar Cliente - " + clienteEditar.getNombre());
@@ -126,8 +139,10 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         }
     }
     
-    
-     private void configurarComponentes() {
+    /**
+     * configurar los componentes del Form.
+     */
+    private void configurarComponentes() {
         txtCodigo.setEditable(false);
         txtCodigo.setText(String.valueOf(GestorClientes.getInstancia().obtenerSiguienteCodigo()));
 
@@ -138,6 +153,9 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         txtFechaNacimiento.setText("");
     }
     
+    /**
+     * Inicializa los comboBox para elegir la provincia/canton/distrito.
+     */
     private void inicializarCombos() {
 
         cmbProvincia.removeAllItems();
@@ -153,6 +171,9 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         actualizarCantones();
     }
 
+    /**
+     * Configura los listeners de Provincia/Canton/Distrito.
+    */
     private void configurarListeners() {
         cmbProvincia.addActionListener(new ActionListener() {
             @Override
@@ -169,6 +190,9 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         });
     }
 
+    /**
+     * Actualiza los cantontes.
+     */
     private void actualizarCantones() {
         String provinciaNombre = (String) cmbProvincia.getSelectedItem();
         Division provincia = divisionTerritorial.getProvincia(provinciaNombre);
@@ -187,7 +211,9 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
             }
         }
     }
-
+    /**
+     * Actualizar los distritos.
+    */
     private void actualizarDistritos() {
         String provinciaNombre = (String) cmbProvincia.getSelectedItem();
         String cantonNombre = (String) cmbCanton.getSelectedItem();
@@ -217,6 +243,10 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Valida los campos antes de agregar o modificar un cliente para verificar que sean validos.
+     * @return 
+     */
     private boolean validarCampos() {
         GestorClientes gestor = GestorClientes.getInstancia();
 
@@ -333,6 +363,11 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         return true;
     }
 
+    /**
+     * Muestra un error si se presenta uno.
+     * @param mensaje Mensaje del error que se presenta.
+     * @param componente Componente que presenta el error.
+     */
     private void mostrarError(String mensaje, javax.swing.JComponent componente) {
         lblMensajes.setText(mensaje);
         lblMensajes.setForeground(new java.awt.Color(204, 0, 0)); // Rojo para errores
@@ -341,7 +376,9 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
         }
     }
     
-  
+    /**
+     * Configura los Campos para ingresar los datos.
+     */
     void configurarEventosCampos() {
 
         txtCodigo.setEditable(false);
@@ -729,7 +766,11 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
     private void txtFechaNacimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaNacimientoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFechaNacimientoActionPerformed
-
+    
+    /**
+     * Boton para guardar el cliente editado o modificado.
+     * @param evt 
+     */
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (!validarCampos()) {
             return;
@@ -793,7 +834,11 @@ public class MantenimientoClienteForm extends javax.swing.JFrame {
             lblMensajes.setText("Error al " + (modoEdicion ? "modificar" : "guardar") + " el cliente: " + e.getMessage());
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
-
+    
+    /**
+     * Boton para cancelar la creacion del nuevo cliente o la modificacion del existente.
+     * @param evt 
+     */
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         RegistroClientesForm registroClientes = new RegistroClientesForm();
         registroClientes.setVisible(true);

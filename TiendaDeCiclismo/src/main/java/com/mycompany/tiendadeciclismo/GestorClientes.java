@@ -8,19 +8,32 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- *
+ * La clase de GestorClientes se encarga de gestionar los clientes que se vayan a crear y el manejo
+ * de estos a traves de un archivo .txt, maneja las funciones CRUD de crear, bsucar, modificar y eliminar.
  * @author dnlal
  */
 public class GestorClientes {
+    /**Atributos
+     * Nombre del archivo donde se guardan los clientes.
+     */
     private static final String ARCHIVO_CLIENTES = "clientes.txt";
+    /**
+     * Lista con los clientes leidos.
+     */
     private ArrayList<Cliente> clientes;
+    
+    /**
+     * Instancia unica de la clase GestorClientes.
+     */
     private static GestorClientes instancia;
     
+    /**
+     * Constructor que inicia la lista de clientes y se asegura que el archivo clientes.txt existe.
+     */
     private GestorClientes() {
         clientes = new ArrayList<>();
         crearArchivoSiNoExiste();
@@ -28,6 +41,9 @@ public class GestorClientes {
        
     }
     
+    /**
+     * Crea el archivo clientes.txt si no existe.
+     */
     private void crearArchivoSiNoExiste() {
     File archivo = new File(ARCHIVO_CLIENTES);
     if (!archivo.exists()) {
@@ -39,6 +55,11 @@ public class GestorClientes {
     }
 }
     
+    /**
+     * Obtiene la instancia única de la clase GestorClientes.
+     * 
+     * @return La instancia única de GestorClientes.
+     */
     public static GestorClientes getInstancia() {
         if (instancia == null) {
             instancia = new GestorClientes();
@@ -46,10 +67,18 @@ public class GestorClientes {
         return instancia;
     }
     
+    /**
+     * Obtiene la lista de clientes.
+     * 
+     * @return Una nueva lista que contiene todos los clientes registrados.
+     */
     public List<Cliente> getClientes() {
         return new ArrayList<>(clientes); // Retorna una copia de la lista
     }
     
+    /**
+     * Carga la lista de clientes desde el archivo.
+     */
     private void cargarClientes() {
         try (BufferedReader br = new BufferedReader(new FileReader(ARCHIVO_CLIENTES))) {
             String linea;
@@ -76,6 +105,9 @@ public class GestorClientes {
         }
     }
     
+    /**
+     * Guarda la lista de clientes en el archivo.
+     */
     public void guardarClientes() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_CLIENTES))) {
             for (Cliente cliente : clientes) {
@@ -87,6 +119,11 @@ public class GestorClientes {
         }
     }
     
+    /**
+     * Obtiene el siguiente código disponible para un nuevo cliente.
+     * 
+     * @return El siguiente código disponible.
+     */
     public int obtenerSiguienteCodigo() {
         if (clientes.isEmpty()) {
             return 1;
@@ -97,6 +134,13 @@ public class GestorClientes {
                       .getAsInt() + 1;
     }
     
+    /**
+     * Agrega un nuevo cliente a la lista, validando que no exista otro cliente con el mismo
+     * correo o teléfono.
+     * 
+     * @param cliente El cliente a agregar.
+     * @throws Exception Si ya existe un cliente con el mismo correo o teléfono.
+     */
     public void agregarCliente(Cliente cliente) throws Exception {
         if (existeCorreo(cliente.getCorreo(), null)) {
             throw new Exception("Ya existe un cliente con ese correo electrónico");
@@ -108,6 +152,13 @@ public class GestorClientes {
         guardarClientes();
     }
 
+   /**
+     * Modifica los datos de un cliente existente, validando que no exista otro
+     * cliente con el mismo correo o teléfono.
+     * 
+     * @param cliente El cliente a modificar.
+     * @throws Exception Si no se encuentra el cliente o ya existe otro cliente con el mismo correo o teléfono.
+     */
     public void modificarCliente(Cliente cliente) throws Exception {
         if (existeCorreo(cliente.getCorreo(), cliente.getCodigo())) {
             throw new Exception("Ya existe otro cliente con ese correo electrónico");
@@ -126,6 +177,12 @@ public class GestorClientes {
         throw new Exception("No se encontró el cliente a modificar");
     }
 
+    /**
+     * Obtiene un cliente según su código.
+     * 
+     * @param codigo El código del cliente.
+     * @return El cliente con el código especificado, o null si no existe.
+     */
     public Cliente obtenerClientePorCodigo(int codigo) {
         for (Cliente cliente : clientes) {
             if (cliente.getCodigo() == codigo) {
@@ -135,16 +192,34 @@ public class GestorClientes {
         return null;
     }
     
+    /**
+     * Valida si un número de teléfono es válido según el formato específico.
+     * 
+     * @param telefono El número de teléfono a validar.
+     * @return true si el teléfono es válido, false si no lo es.
+     */
     public boolean validarTelefono(String telefono) {
         return telefono.matches("^[2468]\\d{7}$");
     }
     
+    /**
+     * Valida si una dirección de correo electrónico es válida.
+     * 
+     * @param correo La dirección de correo electrónico a validar.
+     * @return true si el correo es válido, false si no lo es.
+     */
     public boolean validarCorreo(String correo) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         Pattern pattern = Pattern.compile(emailRegex);
         return pattern.matcher(correo).matches();
     }
     
+    /**
+     * Valida si una fecha de nacimiento tiene el formato correcto.
+     * 
+     * @param fecha La fecha de nacimiento a validar.
+     * @return true si la fecha es válida, false si no lo es.
+     */
     public boolean validarFechaNacimiento(String fecha) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sdf.setLenient(false);
@@ -156,6 +231,13 @@ public class GestorClientes {
         }
     }
     
+    /**
+     * Verifica si ya existe un cliente con el correo proporcionado, excluyendo un cliente con un código especificado.
+     * 
+     * @param correo El correo a verificar.
+     * @param exceptoCodigo El código del cliente que se debe excluir de la búsqueda.
+     * @return true si ya existe un cliente con el correo, false si no.
+     */
     public boolean existeCorreo(String correo, Integer exceptoCodigo) {
         for (Cliente cliente : clientes) {
             if (cliente.getCorreo().equalsIgnoreCase(correo)
@@ -166,6 +248,13 @@ public class GestorClientes {
         return false;
     }
 
+    /**
+     * Verifica si ya existe un cliente con el teléfono proporcionado, excluyendo un cliente con un código especificado.
+     * 
+     * @param telefono El teléfono a verificar.
+     * @param exceptoCodigo El código del cliente que se debe excluir de la búsqueda.
+     * @return true si ya existe un cliente con el teléfono, false si no.
+     */
     public boolean existeTelefono(String telefono, Integer exceptoCodigo) {
         for (Cliente cliente : clientes) {
             if (cliente.getTelefono().equals(telefono)
@@ -175,7 +264,13 @@ public class GestorClientes {
         }
         return false;
     }
-    
+
+        /**
+     * Elimina un cliente de la lista según su código.
+     * 
+     * @param codigo El código del cliente a eliminar.
+     * @throws Exception Si no se encuentra el cliente.
+     */
     public void eliminarCliente(int codigo) throws Exception {
         Cliente clienteAEliminar = null;
     
@@ -194,6 +289,12 @@ public class GestorClientes {
         guardarClientes();
     }
     
+    /**
+     * Busca clientes por su código.
+     * 
+     * @param codigo El código del cliente a buscar.
+     * @return Una lista con los clientes que coincidan con el código.
+     */
     public List<Cliente> buscarClientesPorCodigo(int codigo) {
         List<Cliente> resultados = new ArrayList<>();
         for (Cliente cliente : clientes) {
@@ -205,6 +306,12 @@ public class GestorClientes {
         return resultados;
     }
 
+        /**
+     * Busca clientes por su nombre o apellidos.
+     * 
+     * @param busqueda El nombre o apellido a buscar.
+     * @return Una lista con los clientes que coincidan con la búsqueda.
+     */
     public List<Cliente> buscarClientesPorNombreApellidos(String busqueda) {
         List<Cliente> resultados = new ArrayList<>();
         String busquedaLower = busqueda.toLowerCase();

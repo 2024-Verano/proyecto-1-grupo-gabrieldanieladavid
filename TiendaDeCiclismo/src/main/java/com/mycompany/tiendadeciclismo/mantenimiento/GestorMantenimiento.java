@@ -10,20 +10,37 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+/**
+ * Clase GestorMantenimiento, permite gestionar los Servicios de mantenimiento y hacer con ellos las principales
+ * funciones de un CRUD, ya sean crear, modificar, buscar y eliminar y almacenarlos en un archivo.
+ * 
+ * @author Gabriel Garro
+ */
 public class GestorMantenimiento {
+    /**
+     * Atributos
+     * Nombre del archivo donde se almacenan los servicios de mantenimiento.*/
     public final String ArchivoServicioMantenimiento = "Mantenimiento.txt";
+    /**Lista donde se guardaran los servicios de mantenimiento cargados del archivo.*/
     private ArrayList<ServicioMantenimiento> servicios;
+    /**Instancia unica en Singleton del Gestor*/
     private static GestorMantenimiento instancia;
     
+    /**
+     * Constructor privado de la clase GestorMantenimiento.
+     * Inicializa la lista de servicios y carga los datos desde el archivo.
+     */
     private GestorMantenimiento() {
         servicios = new ArrayList<>();
         crearArchivoSiNoExiste();
         cargarServicios();
     }
 
+    /**
+     * Crea el archivo de mantenimiento si no existe.
+     */
     private void crearArchivoSiNoExiste() {
         File archivo = new File(ArchivoServicioMantenimiento);
         if (!archivo.exists()) {
@@ -35,6 +52,11 @@ public class GestorMantenimiento {
         }
     }
 
+    /**
+     * Obtiene la instancia única de GestorMantenimiento.
+     * 
+     * @return instancia única del Gestor.
+     */
     public static GestorMantenimiento getInstancia() {
         if (instancia == null) {
             instancia = new GestorMantenimiento();
@@ -42,11 +64,18 @@ public class GestorMantenimiento {
         return instancia;
     }
 
+    /**
+     * Obtiene una copia de la lista de servicios de mantenimiento.
+     * 
+     * @return lista de servicios de mantenimiento.
+     */
     public List<ServicioMantenimiento> getServicios() {
         return new ArrayList<>(servicios);
     }
 
-    
+    /**
+     * Carga los servicios de mantenimiento desde el archivo.
+     */
  public void cargarServicios() {
     try (BufferedReader br = new BufferedReader(new FileReader(ArchivoServicioMantenimiento))) {
         String linea;
@@ -80,6 +109,11 @@ public class GestorMantenimiento {
     }
 }
 
+    /**
+     * Obtiene el siguiente código disponible para un nuevo servicio de mantenimiento.
+     * 
+     * @return el siguiente código de servicio disponible.
+     */
     public int obtenerSiguienteCodigo() {
         if (servicios.isEmpty()) {
             return 1;
@@ -90,6 +124,9 @@ public class GestorMantenimiento {
                       .getAsInt() + 1;
     }
     
+    /**
+     * Guarda la lista de servicios de mantenimiento en el archivo.
+     */
     public void guardarServicio(){
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(ArchivoServicioMantenimiento))) {
             for(ServicioMantenimiento servicio: servicios){
@@ -101,11 +138,24 @@ public class GestorMantenimiento {
                 System.err.println("Error al guardar clientes: " + e.getMessage());
             }
     }
+    
+    /**
+     * Agrega un nuevo servicio de mantenimiento a la lista y lo guarda en el archivo.
+     * 
+     * @param servicio el servicio de mantenimiento a agregar.
+     * @throws Exception si ocurre un error al guardar el servicio.
+     */
     public void agregarServicio(ServicioMantenimiento servicio)throws Exception{
         servicios.add(servicio);
         guardarServicio();
     }
     
+    /**
+     * Modifica un servicio de mantenimiento existente en la lista y guarda los cambios en el archivo.
+     * 
+     * @param servicio el servicio de mantenimiento a modificar.
+     * @throws Exception si no se encuentra el servicio a modificar.
+     */
     public void modificarServicio(ServicioMantenimiento servicio) throws Exception {
         for (int i = 0; i < servicios.size(); i++) {
             if (servicios.get(i).getCodigoServicio() == servicio.getCodigoServicio()) {
@@ -116,6 +166,13 @@ public class GestorMantenimiento {
         }
         throw new Exception("No se encontró el servicio a modificar");
     }
+    
+    /**
+     * Elimina un servicio de mantenimiento de la lista y actualiza el archivo.
+     * 
+     * @param codigo el código del servicio a eliminar.
+     * @throws Exception si no se encuentra el servicio a eliminar.
+     */
     public void eliminarServicio(int codigo)throws Exception{
         ServicioMantenimiento eliminarServicio= null;
         for(ServicioMantenimiento servicio:servicios){
@@ -130,6 +187,13 @@ public class GestorMantenimiento {
         servicios.remove(eliminarServicio);
         guardarServicio();
     }
+    
+    /**
+     * Busca servicios de mantenimiento por el nombre del cliente asociado.
+     * 
+     * @param nombre el nombre del cliente a buscar.
+     * @return una lista de servicios cuyo cliente coincida con el nombre buscado.
+     */
     public List<ServicioMantenimiento> buscarPorNombre(String nombre){
         List<ServicioMantenimiento> resultados= new ArrayList<>();
         String nombreLower= nombre.toLowerCase();
@@ -143,7 +207,13 @@ public class GestorMantenimiento {
             }
         return resultados;
     }
-    
+  
+    /**
+     * Busca un servicio de mantenimiento por su código único.
+     * 
+     * @param codigo el código del servicio a buscar.
+     * @return el servicio de mantenimiento si se encuentra, o null en caso contrario.
+     */
     public ServicioMantenimiento buscarPorCodigo(int codigo){
         for (ServicioMantenimiento servicio:servicios){
             if(servicio.getCodigoServicio()==codigo){
@@ -152,12 +222,19 @@ public class GestorMantenimiento {
         }
     return null;
     }
+    
+    /**
+     * Busca un servicio de mantenimiento por su código y devuelve una lista con el resultado.
+     * 
+     * @param codigo el código del servicio a buscar.
+     * @return una lista con el servicio encontrado, o una lista vacía si no se encuentra.
+     */
     public List<ServicioMantenimiento> buscarServicioPorCodigo(int codigo){
         List<ServicioMantenimiento> resultados = new ArrayList<>();
         for (ServicioMantenimiento servicio : servicios) {
             if (servicio.getCodigoServicio() == codigo) {
                 resultados.add(servicio);
-                break; // Como el código es único, podemos romper el ciclo al encontrarlo
+                break;
             }
         }
         return resultados;

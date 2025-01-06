@@ -12,13 +12,13 @@ import java.util.Set;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ *Pantalla del registro de los clientes.
  * @author dnlal
  */
 public class RegistroClientesForm extends javax.swing.JFrame {
 
     /**
-     * Creates new form RegistroClientesForm
+     * Constructor del Form, configura y carga la tabla.
      */
     public RegistroClientesForm() {
         initComponents();
@@ -30,11 +30,17 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         cargarTabla();
         limpiarMensaje();
     }
-    
+    /**
+     * Metodo para que el texto con el que daremos mensajes de exito o error inicie vacio y no se vea 
+     * en un inicio hasta que ocurra uno de estos.
+     */
     private void limpiarMensaje() {
         lblMensajes.setText("");
     }
     
+    /**
+     * Metodo que configura la tabla donde se mostraran los servicios.
+     */
     private void configurarTabla() {
         String[] columnNames = {
             "Código", "Nombre", "Apellidos", "Teléfono", "Correo",
@@ -51,6 +57,10 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         jTable1.setModel(model);
     }
     
+        /**
+     * Metodo que carga los Clientes desde la lista de clientes de GestorClientes
+     * y los muestra en la tabla.
+     */
     private void cargarTabla() {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0); // Limpiar tabla
@@ -72,11 +82,22 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Metodo que muestra los mensajes al usuario.
+     * @param mensaje Mensaje que enseñaremos.
+     * @param exito Si es un mensaje de exito(true) se mostrara en verde, si es de fracaso(false) 
+     * sera en rojo.
+     */
     private void mostrarMensaje(String mensaje, boolean exito) {
         lblMensajes.setText(mensaje);
         lblMensajes.setForeground(exito ? new java.awt.Color(0, 153, 0) : new java.awt.Color(204, 0, 0));
     }
     
+    /**
+     * Metodo que actualice la tabla para tener los datos mas nuevos luego de actualizar,
+     * modificar o eliminar un cliente.
+     * @param clientes La lista con los clientes cargada en memoria.
+     */
     private void actualizarTabla(List<Cliente> clientes) {
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
@@ -98,6 +119,10 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Metodo para configurar los campos de busqueda de clientes, ya sea por nombre o 
+     * por codigo de cliente.
+     */
     private void configurarCamposBusqueda() {
         txtCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -377,7 +402,9 @@ public class RegistroClientesForm extends javax.swing.JFrame {
     private void txtNombreApellidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreApellidoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNombreApellidoActionPerformed
-
+    /**
+     * Boton para buscar los clientes por codigo o nombre.
+    */
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         String codigoText = txtCodigo.getText().trim();
         String nombreApellidos = txtNombreApellido.getText().trim();
@@ -426,7 +453,10 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         }
    
     }//GEN-LAST:event_btnBuscarActionPerformed
-
+    /**
+     * Boton que llama a la pantalla para agregar un nuevo cliente.
+     * @param evt 
+     */
     private void btnNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoClienteActionPerformed
         MantenimientoClienteForm mantenimientoCliente = new MantenimientoClienteForm();
         mantenimientoCliente.setTitle("Nuevo Cliente");
@@ -434,6 +464,10 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnNuevoClienteActionPerformed
 
+    /**
+     * Boton que llama la pantalla para modificar un cliente seleccionado.
+     * @param evt 
+     */
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
@@ -457,6 +491,10 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnModificarActionPerformed
 
+    /**
+     * Boton para eliminar un cliente seleccionado.
+     * @param evt 
+     */
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         int selectedRow = jTable1.getSelectedRow();
         if (selectedRow == -1) {
@@ -491,6 +529,10 @@ public class RegistroClientesForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    /**
+     * Boton para regresar a la pantalla de Menu Principal.
+     * @param evt 
+     */
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         MenuPrincipal menuPrincipal = new MenuPrincipal();
         menuPrincipal.setVisible(true);

@@ -16,11 +16,19 @@ import java.util.Date;
 
 
 /**
- *
+ *Pantalla para agregar o modificar un servicio de mantenimiento.
  * @author Gabriel Garro
  */
 public class PantallaServicioMantenimiento extends javax.swing.JFrame {
+    /**
+     * Atributos
+     * Booleano para activar el modo edicion si es true, el modo edicion sirve para editar un servicio seleccionado creado previamente.
+     */
         private boolean modoEdicion = false;
+        
+    /**
+     * El servicio que se va a modificar.
+     */
         private ServicioMantenimiento servicioEditar = null;
     /**
      * Creates new form PantallaServicioMantenimiento
@@ -28,6 +36,12 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
     public PantallaServicioMantenimiento() {
         this(null);
     }
+    
+    /**
+     * Constructor de la pantalla, al llamarse carga los clientes y los datos de los servicios de mantenimiento, verifica si
+     * el modo edición esta activado si se necesita modificar un servicio o si se necesita crear uno nuevo.
+     * @param servicio 
+     */
     public PantallaServicioMantenimiento(ServicioMantenimiento servicio){
         initComponents();
         setLocationRelativeTo(null);
@@ -71,7 +85,10 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
             configurarComponentes();
             configurarEventosCampos();
         }}
-        
+    
+    /**
+     * Si se va a modificar un servicio, se vargan los datos del servicio seleccionado.
+     */
     private void cargarDatosServicio(){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -121,6 +138,10 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
             mensajeDialog.setText("");
         }
 }
+    
+    /**
+     * Metodó que configura los campos para ingresar los datos de el servicio de mantenimiento a agregar.
+     */
         private void configurarComponentes() {
         CodigoServicio.setEditable(false);
         CodigoServicio.setText(String.valueOf(GestorMantenimiento.getInstancia().obtenerSiguienteCodigo()));
@@ -134,7 +155,11 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         Estado.setEditable(false);
         Estado.setText("Abierto");
     }
-        
+    
+        /**
+         * Carga los clientes para mostrarlos como combobox a la hora de ingresar el codigo del cliente y muestra sus nombres para
+         * un manejo mas fácil.
+         */
         private void cargarClientes() {
         cmbClientes.removeAllItems(); // Limpia el combobox
 
@@ -149,7 +174,10 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         }
     }
     
-    
+    /**
+     * Valida que todos los datos se ingresen correctamente.
+     * @return 
+     */
     private boolean validarCampos() {
         GestorMantenimiento gestor = GestorMantenimiento.getInstancia();
         
@@ -208,7 +236,11 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         return true;
     }
     
-    
+    /**
+     * Metodo para mostrar los errores.
+     * @param mensaje mensaje de error que se va mostrar.
+     * @param componente componente donde se genera el error.
+     */
         private void mostrarError(String mensaje, javax.swing.JComponent componente) {
         mensajeDialog.setText(mensaje);
         mensajeDialog.setForeground(new java.awt.Color(204, 0, 0)); // Rojo para errores
@@ -216,7 +248,9 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
             componente.requestFocus();
         }
     }
-    
+    /**
+     * Configura los campos donde se ingresan los datos.
+     */
     void configurarEventosCampos() {
         CodigoServicio.setEditable(false);
         CodigoServicio.setText(String.valueOf(GestorMantenimiento.getInstancia().obtenerSiguienteCodigo()));
@@ -545,6 +579,11 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Cancela la opción de modificar o agregar los servicios y se devuelve a la pantalla principal del registro
+     * de Servicio de Mantenimiento.
+     * @param evt 
+     */
     private void CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelarActionPerformed
         ServicioMantenimientoForm registroServicios = new ServicioMantenimientoForm();
         registroServicios.setVisible(true);
@@ -552,6 +591,10 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
 
     }//GEN-LAST:event_CancelarActionPerformed
 
+    /**
+     * Agrega el servicio de mantenimiento nuevo o guarda el modificado.
+     * @param evt 
+     */
     private void AgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AgregarActionPerformed
         if (!validarCampos()) {
             return;

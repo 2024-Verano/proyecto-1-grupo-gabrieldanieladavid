@@ -3,33 +3,26 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.mycompany.tiendadeciclismo.mantenimiento.ParteGrafica;
-import com.mycompany.tiendadeciclismo.Cliente;
-import com.mycompany.tiendadeciclismo.GestorClientes;
-import com.mycompany.tiendadeciclismo.MantenimientoClienteForm;
 import com.mycompany.tiendadeciclismo.MenuPrincipal;
 import com.mycompany.tiendadeciclismo.ServicioMantenimiento;
 import com.mycompany.tiendadeciclismo.mantenimiento.GestorMantenimiento;
-import com.mycompany.tiendadeciclismo.mantenimiento.ParteGrafica.PantallaServicioMantenimiento;
-
-
-     
+    
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
- *
+ *Pantalla principal de el registro de Servicio de Mantenimiento, un archivo Form.
  * @author GGarro
  */
 public class ServicioMantenimientoForm extends javax.swing.JFrame {
 
     /**
-     * Creates new form ServicioMantenimientoPanel
+     * Constructor del Form, Configura la tabla, carga los datos y hace que de inicio no se vea el texto que se usara
+     * para mostrar mensajes.
      */
     public ServicioMantenimientoForm() {
         initComponents();
@@ -41,9 +34,18 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
         cargarTabla();
         limpiarMensaje();
     }
+    
+    /**
+     * Metodo para que el texto con el que daremos mensajes de exito o error inicie vacio y no se vea en un inicio
+     * hasta que ocurra uno de estos.
+     */
     public void limpiarMensaje(){
-        mensajes.setText("");}
+        mensajes.setText("");
+    }
 
+    /**
+     * Metodo que configura la tabla donde se mostraran los servicios.
+     */
     public void Tabla(){
         String[] columnNames = {
             "Codigo Servicio","Codigo Cliente","Nombre Cliente","Bicicleta","Descripcion Bicicleta",
@@ -58,11 +60,21 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
 
         jTable2.setModel(model);
     }            
+    
+    /**
+     * Metodo que muestra los mensajes al usuario.
+     * @param mensaje Mensaje que enseñaremos.
+     * @param exito Si es un mensaje de exito(true) se mostrara en verde, si es de fracaso(false) sera en rojo.
+     */
     private void mostrarMensaje(String mensaje, boolean exito) {
         mensajes.setText(mensaje);
         mensajes.setForeground(exito ? new java.awt.Color(0, 153, 0) : new java.awt.Color(204, 0, 0));
     }
 
+    /**
+     * Metodo que carga los Servicios de Mantenimiento desde la lista de servicios de Gestor Mantenimiento
+     * y los muestra en la tabla.
+     */
     private void cargarTabla() {
         DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
         model.setRowCount(0);
@@ -83,6 +95,10 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Metodo que actualice la tabla para tener los datos mas nuevos luego de actualizar,modificar o eliminar un servicio.
+     * @param servicios La lista con los servicios cargada en memoria.
+     */
     public void ActualizarTabla(List<ServicioMantenimiento>servicios){
         DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
         model.setRowCount(0);
@@ -102,6 +118,10 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
             });
         }
     }
+    
+    /**
+     * Metodó que da formato a los campos donde se ingresa el texto para buscar los servicios por código o nombre.
+     */
         private void configurarCamposBusqueda() {
         buscarCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -151,7 +171,7 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
         Agregar = new javax.swing.JButton();
         Modificar = new javax.swing.JButton();
         Eliminar = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        Buscar = new javax.swing.JButton();
         Regresar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -236,12 +256,12 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(51, 102, 0));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setText("Buscar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        Buscar.setBackground(new java.awt.Color(51, 102, 0));
+        Buscar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Buscar.setText("Buscar");
+        Buscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                BuscarActionPerformed(evt);
             }
         });
 
@@ -285,7 +305,7 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(buscarCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(18, 18, 18)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(18, 18, 18))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -308,7 +328,7 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(buscarCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel3)
-                                .addComponent(jButton1))
+                                .addComponent(Buscar))
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(buscarNombreApellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel2)))
@@ -338,14 +358,21 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
     private void buscarCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarCodigoActionPerformed
 
     }//GEN-LAST:event_buscarCodigoActionPerformed
-
+    /**
+     * 
+     * Abre la pantalla para agregar un servicio de mantenimiento.
+     * @param evt
+     */
     private void AgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AgregarActionPerformed
     PantallaServicioMantenimiento form = new PantallaServicioMantenimiento();
     form.setVisible(true);
     this.dispose();
      
     }//GEN-LAST:event_AgregarActionPerformed
-
+    /**
+     * Detecta el servicio seleccionado y lo abre en la pantalla para modificar.
+     * @param evt 
+     */
     private void ModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ModificarActionPerformed
         int selectedRow = jTable2.getSelectedRow();
         if (selectedRow == -1) {
@@ -369,6 +396,10 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ModificarActionPerformed
 
+        /**
+         * Detecta el servicio seleccionado y lo elimina.
+         * @param evt 
+         */
     private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
         int selectedRow = jTable2.getSelectedRow();
         if (selectedRow == -1) {
@@ -406,7 +437,11 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_EliminarActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    /**
+     * Botón para buscar servicios especificos, busca por código y por nombre de cliente y los muestra en la tabla si los encuentra.
+     * @param evt 
+     */
+    private void BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarActionPerformed
         String codigoServicio = buscarCodigo.getText().trim();
         String nombreApellidos = buscarNombreApellidos.getText().trim();
         if (codigoServicio.equals("Ingrese el código de servicio")||codigoServicio.isEmpty()) {
@@ -452,8 +487,12 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
          catch (Exception e) {
             mostrarMensaje("Error al buscar servicios: " + e.getMessage(), false);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
+    }//GEN-LAST:event_BuscarActionPerformed
+    
+    /**
+     * Vuelve a la pantalla del menú principal.
+     * @param evt 
+     */
     private void RegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegresarActionPerformed
         MenuPrincipal menuPrincipal = new MenuPrincipal();
         menuPrincipal.setVisible(true);
@@ -497,12 +536,12 @@ public class ServicioMantenimientoForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Agregar;
+    private javax.swing.JButton Buscar;
     private javax.swing.JButton Eliminar;
     private javax.swing.JButton Modificar;
     private javax.swing.JButton Regresar;
     private javax.swing.JTextField buscarCodigo;
     private javax.swing.JTextField buscarNombreApellidos;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
