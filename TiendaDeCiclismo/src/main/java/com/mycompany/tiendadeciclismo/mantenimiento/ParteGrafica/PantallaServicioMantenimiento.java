@@ -5,6 +5,8 @@
 package com.mycompany.tiendadeciclismo.mantenimiento.ParteGrafica;
 
 
+import com.mycompany.tiendadeciclismo.Cliente;
+import com.mycompany.tiendadeciclismo.GestorClientes;
 import com.mycompany.tiendadeciclismo.ServicioMantenimiento;
 import com.mycompany.tiendadeciclismo.mantenimiento.GestorMantenimiento;
 import java.awt.event.ActionListener;
@@ -29,9 +31,8 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
     public PantallaServicioMantenimiento(ServicioMantenimiento servicio){
         initComponents();
         setLocationRelativeTo(null);
+        cargarClientes();
         CodigoServicio.setEditable(false);
-        CodigoCliente.setEditable(true);
-        CodigoCliente.setEnabled(true);
         Bicicleta.setEditable(true);
         Bicicleta.setEnabled(true);
         Descripcion.setEditable(true);
@@ -43,9 +44,7 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         Observaciones.setEditable(true);
         Observaciones.setEnabled(true);
         
-        for (ActionListener al : CodigoCliente.getActionListeners()) {
-            CodigoCliente.removeActionListener(al);
-        }
+
         for (ActionListener al : Bicicleta.getActionListeners()) {
             Bicicleta.removeActionListener(al);
         }
@@ -67,7 +66,7 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
             servicioEditar = servicio;
             setTitle("Modificar Servicio");
             cargarDatosServicio();
-        }else{
+        } else {
             setTitle("Nuevo Servicio");
             configurarComponentes();
             configurarEventosCampos();
@@ -82,9 +81,14 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
             CodigoServicio.setEditable(false);
             CodigoServicio.setText(String.valueOf(servicioEditar.getCodigoServicio()));
 
-            CodigoCliente.setEditable(true);
-            CodigoCliente.setText(String.valueOf(servicioEditar.getCodigoCliente()));
-
+            for (int i = 0; i < cmbClientes.getItemCount(); i++) {
+                String item = cmbClientes.getItemAt(i);
+                int codigo = Integer.parseInt(item.split(" - ")[0]);
+                if (codigo == servicioEditar.getCodigoCliente()) {
+                    cmbClientes.setSelectedIndex(i);
+                    break;
+                }
+            }
             Bicicleta.setEditable(true);
             Bicicleta.setEnabled(true);
             Bicicleta.setText(servicioEditar.getMarcaBicicleta());
@@ -121,7 +125,6 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         CodigoServicio.setEditable(false);
         CodigoServicio.setText(String.valueOf(GestorMantenimiento.getInstancia().obtenerSiguienteCodigo()));
 
-        CodigoCliente.setText("");
         Bicicleta.setText("");
         Descripcion.setText("");
         Precio.setText("");
@@ -131,15 +134,30 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         Estado.setEditable(false);
         Estado.setText("Abierto");
     }
+        
+        private void cargarClientes() {
+        cmbClientes.removeAllItems(); // Limpia el combobox
+
+        // Obtiene la instancia del gestor de clientes
+        GestorClientes gestorClientes = GestorClientes.getInstancia();
+
+        // Obtiene la lista de clientes y los agrega al combobox
+        for (Cliente cliente : gestorClientes.getClientes()) {
+            cmbClientes.addItem(cliente.getCodigo() + " - "
+                    + cliente.getNombre() + " "
+                    + cliente.getApellidos());
+        }
+    }
     
     
     private boolean validarCampos() {
         GestorMantenimiento gestor = GestorMantenimiento.getInstancia();
-
-        if (CodigoCliente.getText().equals("Ingrese el codigo del cliente")) {
-            mostrarError("El codigo del cliente es obligatorio", CodigoCliente);
+        
+        if (cmbClientes.getSelectedItem() == null) {
+            mostrarError("Debe seleccionar un cliente", cmbClientes);
             return false;
         }
+
 
         if (Bicicleta.getText().equals("Ingrese la marca de Bici")) {
             mostrarError("La marca de la bici es obligatorios", Bicicleta);
@@ -168,11 +186,6 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
             mostrarError("Las observaciones son obligatorias", Observaciones);
             return false;}
             
-        String CodCliente = CodigoCliente.getText().trim();
-        if (CodCliente.isEmpty()) {
-            mostrarError("El codigo de cliente es obligatorio", CodigoCliente);
-            return false;
-        }
 
         String NomBicicleta = Bicicleta.getText().trim();
         if (NomBicicleta.isEmpty()) {
@@ -208,19 +221,6 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         CodigoServicio.setEditable(false);
         CodigoServicio.setText(String.valueOf(GestorMantenimiento.getInstancia().obtenerSiguienteCodigo()));
 
-        CodigoCliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                if (CodigoCliente.getText().equals("Ingrese el codigo de cliente")) {
-                    CodigoCliente.setText("");
-                }
-            }
-
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                if (CodigoCliente.getText().isEmpty()) {
-                    CodigoCliente.setText("Ingrese el codigo de cliente");
-                }
-            }
-        });
 
         Bicicleta.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -322,7 +322,6 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         mensajeDialog = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         CodigoServicio = new javax.swing.JTextField();
-        CodigoCliente = new javax.swing.JTextField();
         Descripcion = new javax.swing.JTextField();
         Precio = new javax.swing.JTextField();
         Bicicleta = new javax.swing.JTextField();
@@ -338,6 +337,7 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         lblTitulo = new javax.swing.JLabel();
+        cmbClientes = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -374,9 +374,6 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
                 CodigoServicioActionPerformed(evt);
             }
         });
-
-        CodigoCliente.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        CodigoCliente.setText("Ingrese el codigo de cliente");
 
         Descripcion.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         Descripcion.setText("Ingrese descripcion de la bici");
@@ -433,6 +430,9 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         lblTitulo.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         lblTitulo.setText("Servicio");
 
+        cmbClientes.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cmbClientes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -484,8 +484,8 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
                             .addComponent(jLabel3))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(CodigoCliente)
-                            .addComponent(CodigoServicio))))
+                            .addComponent(CodigoServicio)
+                            .addComponent(cmbClientes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -501,10 +501,10 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CodigoServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CodigoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -560,12 +560,17 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
         try {
             GestorMantenimiento gestor = GestorMantenimiento.getInstancia();
 
-            String codigoCliente =CodigoCliente.getText().trim();
-            int codCliente=Integer.parseInt(codigoCliente);
+            String selectedItem = (String) cmbClientes.getSelectedItem();
+            if (selectedItem == null) {
+                mostrarError("Debe seleccionar un cliente", cmbClientes);
+                return;
+            }
+            int codCliente = Integer.parseInt(selectedItem.split(" - ")[0]);
+
             String bicicleta = Bicicleta.getText().trim();
             String descripcion = Descripcion.getText().trim();
             String precioX = Precio.getText().trim();
-            int precio=Integer.parseInt(precioX);
+            int precio = Integer.parseInt(precioX);
             String fechaRecibido = FechaRecibo.getText().trim();
             String fechaEntrega = FechaEntrega.getText().trim();
             String observaciones =Observaciones.getText().trim();
@@ -597,10 +602,7 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
                     observaciones,
                     estado
                 );
-                if (servicio.obtenerNombreCliente(codCliente).equals("Cliente no encontrado")){
-                    mostrarError("Ingrese un cliente valido",CodigoCliente);
-                    return;
-                }
+                
                 gestor.modificarServicio(servicio);
                 mensajeDialog.setText("Servicio modificado exitosamente");
             } else {
@@ -617,10 +619,7 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
                     estado
 
                 );
-                if (servicio.obtenerNombreCliente(codCliente).equals("Cliente no encontrado")){
-                    mostrarError("Ingrese un cliente valido",CodigoCliente);
-                    return;
-                }
+              
                 gestor.agregarServicio(servicio);
                 mensajeDialog.setText("Servicio guardado exitosamente");
             }ServicioMantenimientoForm registroServicios = new ServicioMantenimientoForm();
@@ -685,7 +684,6 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
     private javax.swing.JButton Agregar;
     private javax.swing.JTextField Bicicleta;
     private javax.swing.JButton Cancelar;
-    private javax.swing.JTextField CodigoCliente;
     private javax.swing.JTextField CodigoServicio;
     private javax.swing.JTextField Descripcion;
     private javax.swing.JTextField Estado;
@@ -693,6 +691,7 @@ public class PantallaServicioMantenimiento extends javax.swing.JFrame {
     private javax.swing.JTextField FechaRecibo;
     private javax.swing.JTextField Observaciones;
     private javax.swing.JTextField Precio;
+    private javax.swing.JComboBox<String> cmbClientes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
