@@ -1,2 +1,2 @@
 0,1,Manzana,Accesorios,0.0,Motorola,1200,1
-1,1,Arroz,Suplementos alimenticios,0.0,Tio Pelon,1300,3
+1,1,Arroz,Suplementos alimenticios,0.0,Tio Pelon,1300,1

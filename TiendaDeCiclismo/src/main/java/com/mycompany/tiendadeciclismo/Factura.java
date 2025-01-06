@@ -67,8 +67,14 @@ public class Factura {
     
     @Override
     public String toString() {
-        return String.format("%d,%d,%tF,%s,%d,%d,%d", // Cambiar %.2f a %d
-                numeroFactura, codigoCliente, fecha, estado, subtotal, iva, total);
+        return String.format("%d,%d,%tF,%s,%d,%d,%d",
+                numeroFactura,
+                codigoCliente,
+                fecha,
+                estado,
+                subtotal,
+                iva,
+                total);
     }
     
     

@@ -20,6 +20,10 @@ public class GestorFacturas {
         cargarFacturas();
     }
     
+    public List<Factura> getFacturas() {
+        return new ArrayList<>(facturas);
+    }
+    
     public static GestorFacturas getInstancia() {
         if (instancia == null) {
             instancia = new GestorFacturas();
@@ -58,11 +62,19 @@ public class GestorFacturas {
                 String[] datos = linea.split(",");
                 if (datos.length == 7) {
                     Factura factura = new Factura(
-                        Integer.parseInt(datos[0]),
-                        Integer.parseInt(datos[1]),
-                        sdf.parse(datos[2])
+                            Integer.parseInt(datos[0]), 
+                            Integer.parseInt(datos[1]), 
+                            sdf.parse(datos[2]) 
                     );
-                    factura.setEstado(datos[3]);
+                    factura.setEstado(datos[3]);    
+
+                   
+                    factura.setSubtotal(Integer.parseInt(datos[4]));  
+                    factura.setIva(Integer.parseInt(datos[5]));      
+                    factura.setTotal(Integer.parseInt(datos[6]));   
+
+                    cargarDetallesFactura(factura);
+
                     facturas.add(factura);
                 }
             }
@@ -70,18 +82,40 @@ public class GestorFacturas {
             System.err.println("Error al cargar facturas: " + e.getMessage());
         }
     }
+
+    private void cargarDetallesFactura(Factura factura) {
+        try (BufferedReader br = new BufferedReader(new FileReader(ARCHIVO_DETALLES))) {
+            String linea;
+            while ((linea = br.readLine()) != null && !linea.isEmpty()) {
+                String[] datos = linea.split(",");
+                if (datos.length == 5) {  
+                    int numeroFactura = Integer.parseInt(datos[0]);
+
+                    if (numeroFactura == factura.getNumeroFactura()) {
+                        DetalleFactura detalle = new DetalleFactura(
+                                numeroFactura,
+                                Integer.parseInt(datos[1]), 
+                                Integer.parseInt(datos[2]), 
+                                Integer.parseInt(datos[3]) 
+                        );
+                        factura.getDetalles().add(detalle);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al cargar detalles de factura: " + e.getMessage());
+        }
+    }
     
     public void agregarFactura(Factura factura) {
         facturas.add(factura);
 
         try {
-            // Guardar la factura
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_FACTURAS, true))) {
                 bw.write(factura.toString());
                 bw.newLine();
             }
 
-            // Guardar los detalles
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_DETALLES, true))) {
                 for (DetalleFactura detalle : factura.getDetalles()) {
                     bw.write(detalle.toString());
@@ -90,6 +124,36 @@ public class GestorFacturas {
             }
         } catch (IOException e) {
             throw new RuntimeException("Error al guardar la factura: " + e.getMessage());
+        }
+    }
+    
+    public void anularFactura(int numeroFactura) throws Exception {
+        Factura factura = obtenerFactura(numeroFactura);
+        if (factura == null) {
+            throw new Exception("Factura no encontrada");
+        }
+
+        factura.setEstado("Anulado");
+        guardarFacturas();
+    }
+
+    public Factura obtenerFactura(int numeroFactura) {
+        for (Factura factura : facturas) {
+            if (factura.getNumeroFactura() == numeroFactura) {
+                return factura;
+            }
+        }
+        return null;
+    }
+
+    private void guardarFacturas() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_FACTURAS))) {
+            for (Factura factura : facturas) {
+                bw.write(factura.toString());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error al guardar facturas: " + e.getMessage());
         }
     }
     

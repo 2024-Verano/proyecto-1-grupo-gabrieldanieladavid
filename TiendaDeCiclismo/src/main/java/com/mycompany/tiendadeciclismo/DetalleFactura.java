@@ -24,7 +24,11 @@ public class DetalleFactura {
     
     @Override
     public String toString() {
-        return String.format("%d,%d,%d,%.d,%.d", 
-            numeroFactura, codigoArticulo, cantidad, precioUnitario, total);
+        return String.format("%d,%d,%d,%d,%d",
+                numeroFactura,
+                codigoArticulo,
+                cantidad,
+                precioUnitario,
+                total);
     }
 }

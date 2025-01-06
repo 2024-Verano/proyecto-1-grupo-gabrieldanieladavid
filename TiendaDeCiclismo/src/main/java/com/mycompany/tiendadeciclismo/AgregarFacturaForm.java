@@ -5,9 +5,13 @@
 package com.mycompany.tiendadeciclismo;
 
 import com.mycompany.tiendadeciclismo.productos.Articulo;
+import com.mycompany.tiendadeciclismo.productos.gestorTProductosArticulos;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -192,7 +196,7 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
                             .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGap(32, 32, 32)
@@ -425,7 +429,7 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(40, 40, 40)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -455,71 +459,101 @@ public class AgregarFacturaForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtEstadoActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        if (model.getRowCount() == 0) {
-            lblMensajes.setText("No se puede guardar una factura sin artículos");
-            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
-            return;
-        }
-
-        String clienteSeleccionado = (String) cmbCliente.getSelectedItem();
-        if (clienteSeleccionado == null || clienteSeleccionado.isEmpty()) {
-            lblMensajes.setText("Debe seleccionar un cliente");
-            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
-            return;
-        }
-
         try {
-            int numeroFactura = Integer.parseInt(txtNumFactura.getText());
+            
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            if (model.getRowCount() == 0) {
+                lblMensajes.setText("Debe agregar al menos un artículo a la factura");
+                lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+                return;
+            }
+
+            if (cmbCliente.getSelectedItem() == null) {
+                lblMensajes.setText("Debe seleccionar un cliente");
+                lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+                return;
+            }
+
+            String clienteSeleccionado = cmbCliente.getSelectedItem().toString();
             int codigoCliente = Integer.parseInt(clienteSeleccionado.split(" - ")[0]);
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            Date fecha = sdf.parse(txtFecha.getText());
+            sdf.setLenient(false);
+            Date fecha;
+            try {
+                fecha = sdf.parse(txtFecha.getText());
+            } catch (ParseException e) {
+                lblMensajes.setText("Formato de fecha inválido (dd/mm/aaaa)");
+                lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+                return;
+            }
 
-            int subtotal = Integer.parseInt(txtSubtotal.getText().replace("₡", "").replace(",", "").trim());
-            int iva = Integer.parseInt(txtIVA.getText().replace("₡", "").replace(",", "").trim());
-            int total = Integer.parseInt(txtTotal.getText().replace("₡", "").replace(",", "").trim());
-            
+            int numeroFactura = Integer.parseInt(txtNumFactura.getText());
             Factura factura = new Factura(numeroFactura, codigoCliente, fecha);
-            factura.setSubtotal(subtotal);
-            factura.setIva(iva);
-            factura.setTotal(total);
+
+            ArrayList<DetalleFactura> detalles = new ArrayList<>();
+            int subtotal = 0;
 
             for (int i = 0; i < model.getRowCount(); i++) {
+
                 int codigoArticulo = Integer.parseInt(model.getValueAt(i, 0).toString());
                 int cantidad = Integer.parseInt(model.getValueAt(i, 2).toString());
-                int precioUnitario = Integer.parseInt(model.getValueAt(i, 3).toString()
-                        .replace("₡", "").replace(",", "").trim());
+
+                
+                String precioUnitarioStr = model.getValueAt(i, 3).toString()
+                        .replace("₡", "")
+                        .replace(",", "")
+                        .trim();
+                int precioUnitario = Integer.parseInt(precioUnitarioStr);
 
                 DetalleFactura detalle = new DetalleFactura(
                         numeroFactura,
                         codigoArticulo,
                         cantidad,
-                        precioUnitario 
+                        precioUnitario
                 );
+                detalles.add(detalle);
 
-                factura.getDetalles().add(detalle);
+                gestorTProductosArticulos gestorArticulos = new gestorTProductosArticulos();
+                Articulo articulo = gestorArticulos.buscarArticulo(codigoArticulo);
+                if (articulo != null) {
+                    if (articulo.getCantidad() < cantidad) {
+                        lblMensajes.setText("No hay suficiente existencia del artículo: " + articulo.getNombre());
+                        lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+                        return;
+                    }
+                    articulo.setCantidad(articulo.getCantidad() - cantidad);
+                }
+                gestorArticulos.guardarArticulos();
+
+                subtotal += (cantidad * precioUnitario);
             }
 
+            int iva = (int) (subtotal * 0.13);
+            int total = subtotal + iva;
+
+            factura.setSubtotal(subtotal);
+            factura.setIva(iva);
+            factura.setTotal(total);
+            factura.getDetalles().addAll(detalles);
+
+            GestorFacturas gestorFacturas = GestorFacturas.getInstancia();
             gestorFacturas.agregarFactura(factura);
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Factura guardada exitosamente",
-                    "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            lblMensajes.setText("Factura guardada exitosamente");
+            lblMensajes.setForeground(new java.awt.Color(0, 153, 0));
 
-            FacturacionForm facturacionForm = new FacturacionForm();
-            facturacionForm.setVisible(true);
-            this.dispose();
+            javax.swing.Timer timer = new javax.swing.Timer(500, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    FacturacionForm facturacionForm = new FacturacionForm();
+                    facturacionForm.setVisible(true);
+                    dispose();
+                }
+            });
+            timer.setRepeats(false);
+            timer.start();
 
-        } catch (ParseException e) {
-            lblMensajes.setText("Error en el formato de la fecha");
-            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
-        } catch (NumberFormatException e) {
-            lblMensajes.setText("Error en el formato de los números");
-            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
         } catch (Exception e) {
             lblMensajes.setText("Error al guardar la factura: " + e.getMessage());
             lblMensajes.setForeground(new java.awt.Color(204, 0, 0));

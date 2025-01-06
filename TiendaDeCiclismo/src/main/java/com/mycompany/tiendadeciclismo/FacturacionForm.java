@@ -4,18 +4,105 @@
  */
 package com.mycompany.tiendadeciclismo;
 
+import java.awt.Color;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author dnlal
  */
 public class FacturacionForm extends javax.swing.JFrame {
+    
+    private GestorFacturas gestorFacturas;
+    private GestorClientes gestorClientes;
 
     /**
      * Creates new form FacturacionForm
      */
     public FacturacionForm() {
         initComponents();
+        gestorFacturas = GestorFacturas.getInstancia();
+        gestorClientes = GestorClientes.getInstancia();
+
+        setLocationRelativeTo(null);
+        lblMensajes.setText("");
+
+        configurarCamposBusqueda();
+        cargarFacturas();
     }
+    
+    private void configurarCamposBusqueda() {
+        txtNumFactura.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (txtNumFactura.getText().equals("Ingrese el número")) {
+                    txtNumFactura.setText("");
+                }
+            }
+
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (txtNumFactura.getText().isEmpty()) {
+                    txtNumFactura.setText("Ingrese el número");
+                }
+            }
+        });
+
+        txtNombreApellido.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (txtNombreApellido.getText().equals("Ingrese el nombre/apellidos")) {
+                    txtNombreApellido.setText("");
+                }
+            }
+
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (txtNombreApellido.getText().isEmpty()) {
+                    txtNombreApellido.setText("Ingrese el nombre/apellidos");
+                }
+            }
+        });
+
+        txtFecha.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (txtFecha.getText().equals("dd/mm/aaaa")) {
+                    txtFecha.setText("");
+                }
+            }
+
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (txtFecha.getText().isEmpty()) {
+                    txtFecha.setText("dd/mm/aaaa");
+                }
+            }
+        });
+    }
+    
+    private void cargarFacturas() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        for (Factura factura : gestorFacturas.getFacturas()) {
+            Cliente cliente = gestorClientes.obtenerClientePorCodigo(factura.getCodigoCliente());
+            String nombreCliente = cliente != null
+                    ? cliente.getNombre() + " " + cliente.getApellidos() : "Cliente no encontrado";
+
+            model.addRow(new Object[]{
+                factura.getNumeroFactura(),
+                sdf.format(factura.getFecha()),
+                nombreCliente,
+                String.format("₡%d", factura.getSubtotal()),
+                String.format("₡%d", factura.getIva()),
+                String.format("₡%d", factura.getTotal()),
+                factura.getEstado()
+            });
+        }
+    }
+
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -34,6 +121,7 @@ public class FacturacionForm extends javax.swing.JFrame {
         btnAnular = new javax.swing.JButton();
         btnRegresar = new javax.swing.JButton();
         lblMensajes = new javax.swing.JLabel();
+        btnMostrarDetalles = new javax.swing.JButton();
         lblFacturacion = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -115,6 +203,16 @@ public class FacturacionForm extends javax.swing.JFrame {
         lblMensajes.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         lblMensajes.setText("jLabel4");
 
+        btnMostrarDetalles.setBackground(new java.awt.Color(0, 51, 255));
+        btnMostrarDetalles.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnMostrarDetalles.setText("Mostrar Detalles");
+        btnMostrarDetalles.setActionCommand("Modificar");
+        btnMostrarDetalles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMostrarDetallesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -122,16 +220,16 @@ public class FacturacionForm extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(lblMensajes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
+                    .addComponent(lblMensajes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(btnNuevaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnMostrarDetalles, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(btnAnular, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 278, Short.MAX_VALUE)
-                        .addComponent(btnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(124, 124, 124))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE)
+                        .addComponent(btnRegresar, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -140,7 +238,8 @@ public class FacturacionForm extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNuevaFactura)
                     .addComponent(btnAnular)
-                    .addComponent(btnRegresar))
+                    .addComponent(btnRegresar)
+                    .addComponent(btnMostrarDetalles))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblMensajes)
                 .addContainerGap(12, Short.MAX_VALUE))
@@ -269,11 +368,51 @@ public class FacturacionForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNuevaFacturaActionPerformed
 
     private void btnAnularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnularActionPerformed
-    
+
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            lblMensajes.setText("Debe seleccionar una factura para anular");
+            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+            return;
+        }
+
+        String estado = jTable1.getValueAt(selectedRow, 6).toString();
+        if ("Anulado".equals(estado)) {
+            lblMensajes.setText("La factura ya está anulada");
+            lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+            return;
+        }
+
+        int confirmacion = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro que desea anular la factura?",
+                "Confirmar anulación",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirmacion == javax.swing.JOptionPane.YES_OPTION) {
+            try {
+                int numeroFactura = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
+
+                gestorFacturas.anularFactura(numeroFactura);
+
+                cargarFacturas();
+
+                lblMensajes.setText("Factura anulada exitosamente");
+                lblMensajes.setForeground(new java.awt.Color(0, 153, 0));
+
+            } catch (Exception e) {
+                lblMensajes.setText("Error al anular la factura: " + e.getMessage());
+                lblMensajes.setForeground(new java.awt.Color(204, 0, 0));
+            }
+        }
     }//GEN-LAST:event_btnAnularActionPerformed
 
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
-
+        MenuPrincipal menuPrincipal = new MenuPrincipal();
+        menuPrincipal.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnRegresarActionPerformed
 
     private void txtNombreApellidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreApellidoActionPerformed
@@ -281,7 +420,98 @@ public class FacturacionForm extends javax.swing.JFrame {
     }//GEN-LAST:event_txtNombreApellidoActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-  
+        String numFacturaStr = txtNumFactura.getText().trim();
+        String fecha = txtFecha.getText().trim();
+        String nombreCliente = txtNombreApellido.getText().trim();
+
+        if (numFacturaStr.equals("Ingrese el número")) {
+            numFacturaStr = "";
+        }
+        if (fecha.equals("dd/mm/aaaa")) {
+            fecha = "";
+        }
+        if (nombreCliente.equals("Ingrese el nombre/apellidos")) {
+            nombreCliente = "";
+        }
+
+        if (numFacturaStr.isEmpty() && fecha.isEmpty() && nombreCliente.isEmpty()) {
+            cargarFacturas();
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        for (Factura factura : gestorFacturas.getFacturas()) {
+            boolean coincide = true;
+
+            // Filtrar por número de factura
+            if (!numFacturaStr.isEmpty()) {
+                try {
+                    int numFactura = Integer.parseInt(numFacturaStr);
+                    if (factura.getNumeroFactura() != numFactura) {
+                        coincide = false;
+                    }
+                } catch (NumberFormatException e) {
+                    lblMensajes.setText("El número de factura debe ser un valor numérico");
+                    lblMensajes.setForeground(Color.RED);
+                    return;
+                }
+            }
+
+            // Filtrar por fecha
+            if (!fecha.isEmpty()) {
+                try {
+                    Date fechaBusqueda = sdf.parse(fecha);
+                    if (!sdf.format(factura.getFecha()).equals(sdf.format(fechaBusqueda))) {
+                        coincide = false;
+                    }
+                } catch (ParseException e) {
+                    lblMensajes.setText("Formato de fecha inválido (dd/mm/aaaa)");
+                    lblMensajes.setForeground(Color.RED);
+                    return;
+                }
+            }
+
+            // Filtrar por nombre de cliente
+            if (!nombreCliente.isEmpty()) {
+                Cliente cliente = gestorClientes.obtenerClientePorCodigo(factura.getCodigoCliente());
+                if (cliente != null) {
+                    String nombreCompleto = (cliente.getNombre() + " " + cliente.getApellidos()).toLowerCase();
+                    if (!nombreCompleto.contains(nombreCliente.toLowerCase())) {
+                        coincide = false;
+                    }
+                } else {
+                    coincide = false;
+                }
+            }
+
+            // Si pasó todos los filtros, agregar a la tabla
+            if (coincide) {
+                Cliente cliente = gestorClientes.obtenerClientePorCodigo(factura.getCodigoCliente());
+                String nombreClienteFactura = cliente != null
+                        ? cliente.getNombre() + " " + cliente.getApellidos() : "Cliente no encontrado";
+
+                model.addRow(new Object[]{
+                    factura.getNumeroFactura(),
+                    sdf.format(factura.getFecha()),
+                    nombreClienteFactura,
+                    String.format("₡%d", factura.getSubtotal()),
+                    String.format("₡%d", factura.getIva()),
+                    String.format("₡%d", factura.getTotal()),
+                    factura.getEstado()
+                });
+            }
+        }
+
+        if (model.getRowCount() == 0) {
+            lblMensajes.setText("No se encontraron facturas con los criterios especificados");
+            lblMensajes.setForeground(Color.RED);
+        } else {
+            lblMensajes.setText("");
+        }
 
     }//GEN-LAST:event_btnBuscarActionPerformed
 
@@ -292,6 +522,31 @@ public class FacturacionForm extends javax.swing.JFrame {
     private void txtFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFechaActionPerformed
+
+    private void btnMostrarDetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarDetallesActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow == -1) {
+            lblMensajes.setText("Por favor, seleccione una factura para ver los detalles");
+            lblMensajes.setForeground(Color.RED);
+            return;
+        }
+
+        try {
+            int numeroFactura = Integer.parseInt(jTable1.getValueAt(selectedRow, 0).toString());
+            Factura factura = gestorFacturas.obtenerFactura(numeroFactura);
+
+            if (factura != null) {
+                MostrarDetalleFacturaForm detalleForm = new MostrarDetalleFacturaForm(factura);
+                detalleForm.setVisible(true);
+            } else {
+                lblMensajes.setText("Error: No se pudo encontrar la factura seleccionada");
+                lblMensajes.setForeground(Color.RED);
+            }
+        } catch (Exception e) {
+            lblMensajes.setText("Error al cargar los detalles de la factura: " + e.getMessage());
+            lblMensajes.setForeground(Color.RED);
+        }
+    }//GEN-LAST:event_btnMostrarDetallesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -331,6 +586,7 @@ public class FacturacionForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnular;
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnMostrarDetalles;
     private javax.swing.JButton btnNuevaFactura;
     private javax.swing.JButton btnRegresar;
     private javax.swing.JLabel jLabel2;
