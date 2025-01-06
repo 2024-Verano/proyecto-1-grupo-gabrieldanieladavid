@@ -273,7 +273,6 @@ public class GestorClientes {
      */
     public void eliminarCliente(int codigo) throws Exception {
         Cliente clienteAEliminar = null;
-    
         for (Cliente cliente : clientes) {
             if (cliente.getCodigo() == codigo) {
                 clienteAEliminar = cliente;
@@ -283,6 +282,10 @@ public class GestorClientes {
 
         if (clienteAEliminar == null) {
             throw new Exception("No se encontró el cliente a eliminar");
+        }
+
+        if (!ValidadorCliente.puedeEliminarCliente(codigo)) {
+            throw new Exception("No se puede eliminar el cliente porque tiene facturas asociadas");
         }
 
         clientes.remove(clienteAEliminar);

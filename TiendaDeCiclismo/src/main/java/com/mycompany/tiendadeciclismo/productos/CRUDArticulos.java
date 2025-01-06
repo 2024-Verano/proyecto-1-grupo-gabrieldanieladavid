@@ -298,15 +298,34 @@ public class CRUDArticulos extends javax.swing.JFrame {
 
     private void btnEliminarArticulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarArticulosActionPerformed
         int seleccion = tablaArticulos.getSelectedRow();
-        if (seleccion == -1){
-            labelMensaje.setText("Primero Seleccione un tipo de producto");
-            
+        if (seleccion == -1) {
+            labelMensaje.setText("Primero Seleccione un artículo para eliminar");
+            labelMensaje.setForeground(new java.awt.Color(204, 0, 0));
+            return;
         }
-        else {
-            int codigo = Integer.parseInt(tablaArticulos.getValueAt(seleccion, 0).toString());
-            Articulo eliminar = gestionProducto.buscarArticulo(codigo);
-            EliminarArticulo panelModificar = new EliminarArticulo(eliminar);
-            panelModificar.setVisible(true);
+
+        int codigo = Integer.parseInt(tablaArticulos.getValueAt(seleccion, 0).toString());
+
+        if (!ValidadorArticulo.puedeEliminarArticulo(codigo)) {
+            labelMensaje.setText("No se puede eliminar el artículo porque ya está facturado");
+            labelMensaje.setForeground(new java.awt.Color(204, 0, 0));
+            return;
+        }
+
+        Articulo eliminar = gestionProducto.buscarArticulo(codigo);
+        String nombre = eliminar.getNombre();
+
+        int confirmacion = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "¿Está seguro que desea eliminar el artículo " + nombre + "?",
+                "Confirmar eliminación",
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirmacion == javax.swing.JOptionPane.YES_OPTION) {
+            EliminarArticulo panelEliminar = new EliminarArticulo(eliminar);
+            panelEliminar.setVisible(true);
             this.dispose();
         }
     }//GEN-LAST:event_btnEliminarArticulosActionPerformed
